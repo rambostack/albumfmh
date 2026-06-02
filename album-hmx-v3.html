@@ -1,0 +1,2362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Album HMX</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0c10;
+  --bg2:#0f1218;
+  --bg3:#161b24;
+  --bg4:#1d2433;
+  --border:#252d3d;
+  --border2:#2e3a50;
+  --text:#e8edf5;
+  --text2:#7a8ba3;
+  --text3:#4a5568;
+  --blue:#3b82f6;
+  --blue2:#2563eb;
+  --blue3:#1d4ed8;
+  --blue-glow:rgba(59,130,246,0.25);
+  --gold:#f59e0b;
+  --gold-glow:rgba(245,158,11,0.3);
+  --silver:#94a3b8;
+  --epic:#a855f7;
+  --epic-glow:rgba(168,85,247,0.3);
+  --legend:#f97316;
+  --legend-glow:rgba(249,115,22,0.3);
+  --green:#22c55e;
+  --red:#ef4444;
+  --r:14px;
+  --r-sm:8px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+/* ─── AUTH SCREEN ─── */
+#authScreen{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+}
+.auth-wrap{
+  width:min(440px,95vw);
+  background:var(--bg3);
+  border:1px solid var(--border2);
+  border-radius:20px;
+  padding:2.5rem;
+  box-shadow:0 0 60px rgba(59,130,246,0.1);
+  position:relative;overflow:hidden;
+}
+.auth-wrap::before{
+  content:'';position:absolute;top:-60px;right:-60px;width:180px;height:180px;
+  background:radial-gradient(circle,var(--blue-glow),transparent 70%);
+  pointer-events:none;
+}
+.auth-logo{text-align:center;margin-bottom:2rem;}
+.auth-logo-icon{
+  width:64px;height:64px;margin:0 auto 1rem;
+  background:linear-gradient(135deg,var(--blue),var(--blue3));
+  border-radius:16px;display:flex;align-items:center;justify-content:center;
+  font-size:2rem;
+  box-shadow:0 8px 30px var(--blue-glow);
+}
+.auth-logo h1{font-family:'Bebas Neue';font-size:2.2rem;letter-spacing:4px;color:var(--text);}
+.auth-logo h1 span{color:var(--blue);}
+.auth-logo p{color:var(--text2);font-size:0.85rem;margin-top:4px;}
+.auth-tabs{display:flex;background:var(--bg2);border-radius:10px;padding:4px;margin-bottom:1.8rem;}
+.auth-tab{
+  flex:1;padding:9px;border:none;background:transparent;color:var(--text2);
+  font-family:'Rajdhani';font-size:0.95rem;font-weight:600;border-radius:8px;cursor:pointer;
+  transition:all .2s;
+}
+.auth-tab.active{background:var(--blue);color:white;box-shadow:0 4px 15px var(--blue-glow);}
+.auth-field{margin-bottom:1rem;}
+.auth-field label{display:block;font-size:0.8rem;font-weight:600;color:var(--text2);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:6px;}
+.auth-field input{
+  width:100%;padding:11px 14px;
+  background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;
+  color:var(--text);font-family:'Rajdhani';font-size:1rem;outline:none;
+  transition:border-color .2s;
+}
+.auth-field input:focus{border-color:var(--blue);}
+.auth-submit{
+  width:100%;padding:13px;margin-top:0.5rem;
+  background:linear-gradient(135deg,var(--blue),var(--blue3));
+  border:none;border-radius:10px;color:white;
+  font-family:'Rajdhani';font-size:1rem;font-weight:700;letter-spacing:1px;
+  cursor:pointer;transition:all .2s;
+  box-shadow:0 4px 20px var(--blue-glow);
+}
+.auth-submit:hover{transform:translateY(-2px);box-shadow:0 8px 30px var(--blue-glow);}
+.auth-err{color:var(--red);font-size:0.82rem;text-align:center;margin-top:8px;min-height:18px;}
+
+/* ─── LAYOUT ─── */
+#app{display:none;flex-direction:column;min-height:100vh;}
+#app.show{display:flex;}
+
+/* NAV */
+nav{
+  height:58px;background:var(--bg2);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;
+  position:sticky;top:0;z-index:100;flex-shrink:0;
+}
+.nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer;}
+.nav-logo-ball{
+  width:32px;height:32px;background:linear-gradient(135deg,var(--blue),var(--blue3));
+  border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;
+}
+.nav-logo span{font-family:'Bebas Neue';font-size:1.4rem;letter-spacing:3px;}
+.nav-logo span b{color:var(--blue);}
+.nav-center{display:flex;gap:2px;}
+.nav-btn{
+  display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;
+  border:none;background:transparent;color:var(--text2);font-family:'Rajdhani';
+  font-size:0.9rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;
+}
+.nav-btn:hover,.nav-btn.active{background:var(--bg3);color:var(--text);}
+.nav-btn.active{color:var(--blue);}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.nav-coins{
+  display:flex;align-items:center;gap:5px;background:var(--bg3);
+  border:1px solid var(--border);border-radius:20px;padding:5px 12px;
+  font-family:'Space Mono';font-size:0.8rem;color:var(--gold);font-weight:700;
+}
+.nav-avatar{
+  width:34px;height:34px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:0.8rem;color:white;cursor:pointer;
+  border:2px solid var(--border2);transition:border-color .2s;
+}
+.nav-avatar:hover{border-color:var(--blue);}
+.nav-discord{
+  display:flex;align-items:center;gap:6px;padding:7px 12px;
+  background:#5865f2;border:none;border-radius:8px;color:white;
+  font-family:'Rajdhani';font-size:0.85rem;font-weight:700;cursor:pointer;
+}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;border:none;background:none;}
+.hamburger span{width:20px;height:2px;background:var(--text2);border-radius:2px;display:block;}
+
+/* MAIN */
+main{flex:1;display:flex;overflow:hidden;}
+
+/* SIDEBAR */
+.sidebar{
+  width:220px;background:var(--bg2);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;flex-shrink:0;
+  overflow-y:auto;
+}
+.sidebar-section{padding:1rem 0.8rem 0.5rem;}
+.sidebar-label{font-size:0.65rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);padding:0 0.5rem 0.5rem;}
+.sidebar-item{
+  display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;
+  cursor:pointer;color:var(--text2);font-size:0.9rem;font-weight:600;
+  transition:all .2s;margin-bottom:2px;border:none;background:none;width:100%;text-align:left;
+}
+.sidebar-item:hover,.sidebar-item.active{background:var(--bg3);color:var(--text);}
+.sidebar-item.active{color:var(--blue);}
+.sidebar-item .icon{font-size:1rem;width:20px;text-align:center;flex-shrink:0;}
+.sidebar-bottom{margin-top:auto;padding:1rem;border-top:1px solid var(--border);}
+.sidebar-user{display:flex;align-items:center;gap:10px;}
+.sidebar-user-name{font-weight:700;font-size:0.88rem;}
+.sidebar-user-sub{font-size:0.72rem;color:var(--text2);}
+
+/* CONTENT */
+.content{flex:1;overflow-y:auto;overflow-x:hidden;}
+.page{display:none;padding:1.5rem;}
+.page.active{display:block;animation:fadeUp .25s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─── COMPONENTS ─── */
+.page-header{margin-bottom:1.5rem;}
+.page-header h1{font-family:'Bebas Neue';font-size:2rem;letter-spacing:2px;}
+.page-header p{color:var(--text2);font-size:0.88rem;margin-top:2px;}
+
+.card-surface{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);}
+.card-surface-hover{transition:all .2s;}
+.card-surface-hover:hover{border-color:var(--border2);transform:translateY(-2px);}
+
+.grid-2{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;}
+
+.stat-box{padding:1.2rem;border-radius:var(--r);}
+.stat-box .label{font-size:0.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text3);margin-bottom:6px;}
+.stat-box .val{font-family:'Space Mono';font-size:1.6rem;font-weight:700;}
+.stat-box .sub{font-size:0.75rem;color:var(--text2);margin-top:4px;}
+
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:9px;border:none;cursor:pointer;font-family:'Rajdhani';font-size:0.9rem;font-weight:700;transition:all .2s;}
+.btn-primary{background:var(--blue);color:white;box-shadow:0 4px 15px var(--blue-glow);}
+.btn-primary:hover{background:var(--blue2);transform:translateY(-1px);}
+.btn-ghost{background:var(--bg4);color:var(--text);border:1px solid var(--border);}
+.btn-ghost:hover{border-color:var(--border2);background:var(--bg3);}
+.btn-sm{padding:6px 13px;font-size:0.82rem;}
+.btn-danger{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3);}
+.btn-danger:hover{background:rgba(239,68,68,.25);}
+.btn-success{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3);}
+
+/* PROGRESS BAR */
+.progress-wrap{margin:8px 0;}
+.progress-track{height:8px;background:var(--bg2);border-radius:8px;overflow:hidden;}
+.progress-fill{height:100%;border-radius:8px;transition:width 1s ease;}
+.fill-blue{background:linear-gradient(90deg,var(--blue),#60a5fa);}
+.fill-gold{background:linear-gradient(90deg,var(--gold),#fcd34d);}
+.fill-epic{background:linear-gradient(90deg,var(--epic),#c084fc);}
+.fill-legend{background:linear-gradient(90deg,var(--legend),#fb923c);}
+
+/* ─── PLAYER CARD (HaxBall style) ─── */
+.hax-card{
+  border-radius:12px;overflow:hidden;position:relative;
+  display:flex;flex-direction:column;color:white;
+  text-shadow:0 1px 4px rgba(0,0,0,.6);
+  box-shadow:0 4px 20px rgba(0,0,0,.4);
+  cursor:pointer;transition:transform .2s;
+  user-select:none;
+}
+.hax-card:hover{transform:translateY(-4px);}
+
+/* Rarities */
+.r-common{background:linear-gradient(160deg,#1e293b 0%,#0f172a 100%);border:1px solid #334155;}
+.r-silver{background:linear-gradient(160deg,#1e3a4a 0%,#0f2030 100%);border:1px solid #475569;}
+.r-gold{background:linear-gradient(160deg,#2d1f00 0%,#1a1200 100%);border:1px solid var(--gold);}
+.r-epic{background:linear-gradient(160deg,#2d1045 0%,#160825 100%);border:1px solid var(--epic);}
+.r-legend{background:linear-gradient(160deg,#2d1200 0%,#180900 100%);border:1px solid var(--legend);}
+
+.r-gold::before,.r-epic::before,.r-legend::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.08) 50%,transparent 60%);
+  background-size:200% 100%;animation:shimmer 3s linear infinite;
+}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+.card-top{padding:8px 10px 4px;display:flex;align-items:flex-start;justify-content:space-between;}
+.card-rating{font-family:'Bebas Neue';font-size:1.8rem;line-height:1;}
+.card-pos{font-size:0.5rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;opacity:.7;margin-top:1px;}
+.card-team-tag{font-size:0.55rem;font-weight:700;opacity:.6;text-align:right;}
+.card-rarity-icon{font-size:0.8rem;}
+
+/* HaxBall circle avatar */
+.hax-circle-wrap{
+  display:flex;align-items:center;justify-content:center;
+  flex:1;padding:8px 0;position:relative;
+}
+.hax-circle{
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue';font-weight:700;color:white;
+  position:relative;overflow:hidden;flex-shrink:0;
+}
+.hax-circle::after{
+  content:'';position:absolute;
+  top:-30%;left:-20%;width:60%;height:60%;
+  background:radial-gradient(circle,rgba(255,255,255,.35),transparent 70%);
+  border-radius:50%;pointer-events:none;
+}
+.hax-circle img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+
+.card-bottom{padding:6px 10px 8px;background:rgba(0,0,0,.3);}
+.card-name{font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.card-team-name{font-size:0.52rem;opacity:.6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+.card-badge{
+  position:absolute;top:-6px;left:50%;transform:translateX(-50%);
+  font-size:0.48rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;
+  padding:2px 9px;border-radius:4px;white-space:nowrap;
+}
+.badge-new{background:var(--green);color:white;}
+.badge-dupe{background:var(--red);color:white;}
+
+/* ─── HOME ─── */
+.home-hero{
+  background:var(--bg3);border:1px solid var(--border);border-radius:18px;
+  padding:2rem;display:flex;align-items:center;gap:2rem;margin-bottom:1.5rem;
+  position:relative;overflow:hidden;
+}
+.home-hero::before{
+  content:'';position:absolute;top:-40px;right:-40px;
+  width:250px;height:250px;
+  background:radial-gradient(circle,var(--blue-glow),transparent 70%);
+  pointer-events:none;
+}
+.home-hero-text{flex:1;position:relative;z-index:1;}
+.home-hero-text h1{font-family:'Bebas Neue';font-size:2.5rem;letter-spacing:3px;line-height:1;margin-bottom:.5rem;}
+.home-hero-text h1 span{color:var(--blue);}
+.home-hero-text p{color:var(--text2);font-size:.9rem;margin-bottom:1.2rem;max-width:400px;}
+.hero-btns{display:flex;gap:8px;flex-wrap:wrap;}
+.hero-cards{display:flex;gap:8px;position:relative;z-index:1;flex-shrink:0;}
+
+/* ─── DAILY PACK ─── */
+.daily-banner{
+  background:linear-gradient(135deg,rgba(59,130,246,.12),rgba(59,130,246,.04));
+  border:1px solid rgba(59,130,246,.3);border-radius:var(--r);
+  padding:1rem 1.2rem;display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:1.5rem;flex-wrap:wrap;gap:.8rem;
+}
+.daily-banner h3{font-weight:700;margin-bottom:2px;font-size:1rem;}
+.daily-banner p{color:var(--text2);font-size:.8rem;}
+.countdown-display{font-family:'Space Mono';color:var(--blue);font-weight:700;font-size:1.1rem;}
+
+/* ─── PACKS GRID ─── */
+.packs-row{display:flex;gap:1rem;flex-wrap:wrap;}
+.pack-card{
+  flex:1;min-width:160px;max-width:220px;
+  background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);
+  overflow:hidden;cursor:pointer;transition:all .25s;
+}
+.pack-card:hover{transform:translateY(-5px);border-color:var(--border2);}
+.pack-visual{height:160px;display:flex;align-items:center;justify-content:center;position:relative;}
+.pack-img{
+  width:90px;height:130px;border-radius:12px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:6px;font-size:.6rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  color:white;box-shadow:0 8px 30px rgba(0,0,0,.5);transition:transform .3s;position:relative;overflow:hidden;
+}
+.pack-img::after{content:'';position:absolute;inset:0;background:linear-gradient(160deg,rgba(255,255,255,.15),transparent);}
+.pack-card:hover .pack-img{transform:scale(1.08) rotate(-2deg);}
+.pack-label{font-size:.85rem;font-weight:700;padding:.7rem 1rem .3rem;}
+.pack-desc{font-size:.75rem;color:var(--text2);padding:0 1rem;}
+.pack-footer{padding:.8rem 1rem;display:flex;align-items:center;justify-content:space-between;}
+.pack-price{font-family:'Space Mono';font-size:.82rem;font-weight:700;color:var(--gold);}
+.pack-price.free-tag{color:var(--green);}
+
+/* ─── ALBUM ─── */
+.album-outer{overflow-x:auto;padding-bottom:1rem;}
+.album-book{
+  display:flex;gap:0;min-width:max-content;
+  background:var(--bg3);border:1px solid var(--border);border-radius:16px;overflow:hidden;
+}
+.album-page{
+  min-width:420px;padding:1.2rem;position:relative;
+  border-right:2px solid rgba(255,255,255,.04);
+}
+.album-page:last-child{border-right:none;}
+.album-page-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:1rem;padding-bottom:.6rem;
+  border-bottom:1px solid var(--border);
+}
+.album-page-title{font-family:'Bebas Neue';font-size:1.1rem;letter-spacing:2px;color:var(--text2);}
+.album-page-num{font-size:.7rem;color:var(--text3);font-family:'Space Mono';}
+.album-row{display:flex;gap:10px;margin-bottom:10px;}
+.album-slot{
+  width:90px;height:128px;border-radius:10px;
+  border:2px dashed var(--border);background:var(--bg2);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  position:relative;overflow:visible;cursor:pointer;transition:all .2s;flex-shrink:0;
+}
+.album-slot.filled{border:none;padding:0;}
+.album-slot.filled:hover{transform:translateY(-4px) scale(1.05);}
+.album-slot.empty:hover{border-color:var(--border2);}
+.slot-num{font-size:.65rem;color:var(--text3);font-family:'Space Mono';}
+.dupe-badge{
+  position:absolute;top:-7px;right:-7px;
+  background:var(--blue);color:white;width:20px;height:20px;border-radius:50%;
+  font-size:.6rem;font-weight:800;display:flex;align-items:center;justify-content:center;
+  border:2px solid var(--bg3);box-shadow:0 2px 8px rgba(0,0,0,.3);
+}
+
+/* ─── RARITY COLORS for circles ─── */
+.c-common{background:radial-gradient(circle at 35% 35%,#64748b,#1e293b);}
+.c-silver{background:radial-gradient(circle at 35% 35%,#94a3b8,#334155);box-shadow:0 0 12px rgba(148,163,184,.3);}
+.c-gold{background:radial-gradient(circle at 35% 35%,#fbbf24,#92400e);box-shadow:0 0 15px rgba(251,191,36,.4);}
+.c-epic{background:radial-gradient(circle at 35% 35%,#c084fc,#6b21a8);box-shadow:0 0 15px rgba(192,132,252,.5);}
+.c-legend{background:radial-gradient(circle at 35% 35%,#fb923c,#9a3412);box-shadow:0 0 18px rgba(251,146,60,.6);}
+
+/* ─── NEW CATEGORIES ─── */
+.r-campeones{background:linear-gradient(160deg,#0c2a4a 0%,#051525 100%);border:1px solid #38bdf8;}
+.r-america{background:linear-gradient(160deg,#001a3a 0%,#000d1f 100%);border:2px solid #0ea5e9;box-shadow:0 0 20px rgba(14,165,233,.3);}
+.c-campeones{background:radial-gradient(circle at 35% 35%,#38bdf8,#0369a1);box-shadow:0 0 18px rgba(56,189,248,.5);}
+.c-america{background:radial-gradient(circle at 35% 35%,#0ea5e9,#1e3a5f);box-shadow:0 0 22px rgba(14,165,233,.7);}
+.r-campeones::before,.r-america::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(105deg,transparent 40%,rgba(56,189,248,.12) 50%,transparent 60%);
+  background-size:200% 100%;animation:shimmer 3s linear infinite;
+}
+.r-america::after{
+  content:'🌎';position:absolute;bottom:4px;right:6px;font-size:.7rem;opacity:.3;
+}
+
+/* ─── RANKING ─── */
+.rank-table{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.rank-head,.rank-row{
+  display:grid;grid-template-columns:50px 1fr 80px 80px 90px;
+  padding:10px 1.2rem;align-items:center;gap:.5rem;
+}
+.rank-head{background:var(--bg4);font-size:.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text3);}
+.rank-row{border-top:1px solid var(--border);transition:background .15s;}
+.rank-row:hover{background:var(--bg4);}
+.rank-row.me{background:rgba(59,130,246,.08);border-color:rgba(59,130,246,.2);}
+.rank-pos{font-family:'Space Mono';font-weight:700;}
+.r1{color:var(--gold);}
+.r2{color:var(--silver);}
+.r3{color:#cd7f32;}
+.rank-user{display:flex;align-items:center;gap:9px;}
+.rank-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.75rem;color:white;flex-shrink:0;}
+.rank-nm{font-weight:700;font-size:.85rem;}
+.rank-lv{font-size:.68rem;color:var(--text3);}
+.rank-val{font-family:'Space Mono';font-size:.8rem;font-weight:700;text-align:center;}
+
+/* ─── TRADE ─── */
+.trade-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:1rem;align-items:start;}
+.trade-panel{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:1.2rem;}
+.trade-panel h3{font-weight:700;margin-bottom:1rem;}
+.trade-slots{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;}
+.trade-slot{
+  width:80px;height:114px;border-radius:10px;border:2px dashed var(--border);
+  background:var(--bg2);display:flex;align-items:center;justify-content:center;
+  color:var(--text3);font-size:1.5rem;cursor:pointer;transition:all .2s;flex-shrink:0;
+}
+.trade-slot:hover{border-color:var(--blue);color:var(--blue);background:rgba(59,130,246,.06);}
+.trade-mid{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding-top:2.5rem;}
+
+/* ─── MODAL ─── */
+.modal-backdrop{
+  display:none;position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,.8);backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;
+}
+.modal-backdrop.show{display:flex;}
+.modal-box{
+  background:var(--bg3);border:1px solid var(--border2);border-radius:20px;
+  padding:2rem;width:min(500px,95vw);position:relative;max-height:90vh;overflow-y:auto;
+}
+.modal-close{
+  position:absolute;top:1rem;right:1rem;
+  background:var(--bg4);border:none;color:var(--text2);width:32px;height:32px;
+  border-radius:8px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;
+  transition:all .2s;
+}
+.card-preview-large{transform:scale(1.15);transform-origin:top center;margin-bottom:1rem;}
+.modal-close:hover{background:var(--border);color:var(--text);}
+.modal-title{font-family:'Bebas Neue';font-size:1.6rem;letter-spacing:2px;margin-bottom:1.2rem;}
+
+/* ─── PACK OPENING ─── */
+.open-stage{text-align:center;padding:1rem 0;}
+.big-pack-wrap{
+  width:150px;height:210px;margin:0 auto 1.5rem;border-radius:16px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .3s;
+  box-shadow:0 0 0 2px rgba(255,255,255,.1),0 20px 60px rgba(0,0,0,.5);
+  animation:packFloat 3s ease-in-out infinite;position:relative;overflow:hidden;
+}
+.big-pack-wrap::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15),transparent);border-radius:16px;}
+.big-pack-wrap:hover{transform:scale(1.05)!important;animation:none;}
+@keyframes packFloat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-12px) rotate(2deg)}}
+.open-hint{color:var(--text2);font-size:.85rem;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.open-title{font-family:'Bebas Neue';font-size:2rem;letter-spacing:4px;margin-bottom:1rem;}
+
+.cards-result{display:none;flex-wrap:wrap;gap:12px;justify-content:center;padding:.5rem 0;}
+.cards-result.show{display:flex;}
+.card-reveal-wrap{opacity:0;transform:translateY(20px);transition:all .5s ease;}
+.card-reveal-wrap.in{opacity:1;transform:translateY(0);}
+
+/* ─── ADMIN ─── */
+.admin-tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:1.5rem;background:var(--bg2);border-radius:10px;padding:4px;}
+.admin-tab-btn{
+  padding:8px 14px;border:none;background:transparent;color:var(--text2);
+  font-family:'Rajdhani';font-size:.85rem;font-weight:700;border-radius:8px;cursor:pointer;
+  transition:all .2s;white-space:nowrap;
+}
+.admin-tab-btn.active{background:var(--blue);color:white;}
+.admin-section{display:none;}
+.admin-section.active{display:block;}
+.admin-form{display:grid;gap:1rem;}
+.form-field{display:flex;flex-direction:column;gap:5px;}
+.form-field label{font-size:.75rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text2);}
+.form-field input,.form-field select,.form-field textarea{
+  padding:9px 12px;background:var(--bg2);border:1.5px solid var(--border);border-radius:8px;
+  color:var(--text);font-family:'Rajdhani';font-size:.9rem;outline:none;transition:border-color .2s;
+}
+.form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:var(--blue);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.admin-cards-list{display:flex;flex-direction:column;gap:8px;margin-top:1rem;}
+.admin-card-item{
+  display:flex;align-items:center;gap:12px;
+  background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:.8rem 1rem;
+}
+.admin-card-item .info{flex:1;}
+.admin-card-item .name{font-weight:700;font-size:.88rem;}
+.admin-card-item .meta{font-size:.72rem;color:var(--text2);margin-top:2px;}
+.admin-card-preview{width:50px;height:70px;border-radius:7px;flex-shrink:0;}
+
+/* ─── NEWS ─── */
+.news-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;}
+.news-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:all .2s;}
+.news-card:hover{border-color:var(--border2);transform:translateY(-3px);}
+.news-img{height:100px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;}
+.news-body{padding:1rem;}
+.news-tag{font-size:.65rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:4px;}
+.news-title{font-weight:700;font-size:.88rem;line-height:1.4;margin-bottom:4px;}
+.news-date{font-size:.72rem;color:var(--text3);}
+
+/* ─── PROFILE ─── */
+.profile-hero{
+  background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);
+  padding:1.8rem;display:flex;align-items:center;gap:1.5rem;margin-bottom:1.5rem;flex-wrap:wrap;
+  position:relative;overflow:hidden;
+}
+.profile-hero::before{content:'';position:absolute;right:-30px;top:-30px;width:200px;height:200px;background:radial-gradient(circle,var(--blue-glow),transparent 70%);pointer-events:none;}
+.profile-av{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue';font-size:1.8rem;color:white;border:3px solid var(--border2);flex-shrink:0;position:relative;z-index:1;}
+.profile-info{flex:1;position:relative;z-index:1;}
+.profile-info h2{font-weight:800;font-size:1.4rem;margin-bottom:2px;}
+.level-chip{display:inline-block;background:rgba(59,130,246,.2);border:1px solid rgba(59,130,246,.3);color:#60a5fa;font-size:.72rem;font-weight:700;padding:2px 10px;border-radius:5px;margin-top:4px;}
+.xp-bar{height:5px;background:var(--bg2);border-radius:5px;margin-top:8px;overflow:hidden;}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--blue),#60a5fa);border-radius:5px;}
+
+/* ─── ACHIEVEMENTS ─── */
+.ach-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:.8rem;}
+.ach-item{
+  background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);
+  padding:1rem;display:flex;align-items:center;gap:10px;transition:border-color .2s;
+}
+.ach-item:hover{border-color:var(--border2);}
+.ach-item.locked{opacity:.35;filter:grayscale(1);}
+.ach-icon{width:40px;height:40px;border-radius:9px;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
+.ach-name{font-weight:700;font-size:.82rem;margin-bottom:2px;}
+.ach-desc{font-size:.68rem;color:var(--text2);}
+
+/* ─── HISTORY ─── */
+.history-list{display:flex;flex-direction:column;gap:6px;}
+.hist-item{
+  background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);
+  padding:.9rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:.5rem;
+}
+.hist-left{display:flex;align-items:center;gap:10px;}
+.hist-icon{font-size:1.1rem;width:24px;text-align:center;flex-shrink:0;}
+.hist-main{font-weight:600;font-size:.85rem;}
+.hist-sub{font-size:.72rem;color:var(--text2);}
+.hist-date{font-size:.7rem;color:var(--text3);white-space:nowrap;}
+
+/* ─── TOAST ─── */
+.toast{
+  position:fixed;bottom:1.5rem;right:1.5rem;z-index:9000;
+  background:var(--bg3);border:1px solid var(--border2);
+  color:var(--text);padding:10px 18px;border-radius:10px;
+  font-size:.85rem;font-weight:600;
+  transform:translateY(100px);opacity:0;transition:all .3s;
+  box-shadow:0 8px 30px rgba(0,0,0,.4);max-width:280px;
+}
+.toast.show{transform:translateY(0);opacity:1;}
+
+/* ─── MOBILE ─── */
+@media(max-width:768px){
+  nav .nav-center{display:none;}
+  .hamburger{display:flex;}
+  .sidebar{display:none;position:fixed;inset:0;z-index:200;width:100%;}
+  .sidebar.show{display:flex;}
+  .hero-cards{display:none;}
+  .trade-grid{grid-template-columns:1fr;}
+  .rank-head,.rank-row{grid-template-columns:40px 1fr 70px;}
+  .rank-head>*:nth-child(n+4),.rank-row>*:nth-child(n+4){display:none;}
+  .form-row{grid-template-columns:1fr;}
+  .packs-row{justify-content:center;}
+}
+.mobile-nav-header{display:flex;align-items:center;justify-content:space-between;padding:1rem;border-bottom:1px solid var(--border);}
+</style>
+</head>
+<body>
+
+<!-- ═══ AUTH ═══ -->
+<div id="authScreen">
+  <div class="auth-wrap">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">⚽</div>
+      <h1>ALBUM <span>HMX</span></h1>
+      <p>HaxBall México · Temporada 2025</p>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthTab('login')">Iniciar Sesión</button>
+      <button class="auth-tab" onclick="switchAuthTab('register')">Crear Cuenta</button>
+    </div>
+
+    <!-- Login -->
+    <div id="loginForm">
+      <div class="auth-field"><label>Nombre de usuario</label><input id="loginUser" type="text" placeholder="TuNickHax" autocomplete="username"></div>
+      <div class="auth-field"><label>Contraseña</label><input id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password"></div>
+      <button class="auth-submit" onclick="doLogin()">⚡ Entrar al álbum</button>
+    </div>
+
+    <!-- Register -->
+    <div id="registerForm" style="display:none">
+      <div class="auth-field"><label>Nombre de usuario</label><input id="regUser" type="text" placeholder="TuNickHax" autocomplete="username"></div>
+      <div class="auth-field"><label>Contraseña</label><input id="regPass" type="password" placeholder="Mínimo 4 caracteres" autocomplete="new-password"></div>
+      <div class="auth-field"><label>Confirmar contraseña</label><input id="regPass2" type="password" placeholder="Repite tu contraseña" autocomplete="new-password"></div>
+      <button class="auth-submit" onclick="doRegister()">🎮 Crear mi cuenta</button>
+    </div>
+    <div class="auth-err" id="authErr"></div>
+  </div>
+</div>
+
+<!-- ═══ APP ═══ -->
+<div id="app">
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">
+    <div class="nav-logo-ball">⚽</div>
+    <span>ALBUM <b>HMX</b></span>
+  </div>
+  <div class="nav-center">
+    <button class="nav-btn active" id="nb-home" onclick="showPage('home')">🏠 Inicio</button>
+    <button class="nav-btn" id="nb-packs" onclick="showPage('packs')">⬜ Abrir Sobres</button>
+    <button class="nav-btn" id="nb-album" onclick="showPage('album')">📖 Mi Álbum</button>
+    <button class="nav-btn" id="nb-trade" onclick="showPage('trade')">🔄 Tradear</button>
+    <button class="nav-btn" id="nb-redeem" onclick="showPage('redeem')">🎟️ Canjear</button>
+    <button class="nav-btn" id="nb-ranking" onclick="showPage('ranking')">🏆 Ranking</button>
+    <button class="nav-btn" id="nb-profile" onclick="showPage('profile')">👤 Perfil</button>
+  </div>
+  <div class="nav-right">
+    <div class="nav-coins" id="navCoins">🪙 0</div>
+    <div class="nav-discord" id="navDiscordBtn" onclick="(()=>{const cfg=window._designCfg||(window._designCfg=JSON.parse(localStorage.getItem('hmx_design_config')||'{}'));window.open(cfg.discordUrl||'#','_blank')})()">
+      <svg width="16" height="12" viewBox="0 0 18 14" fill="currentColor"><path d="M15.25 1.23A14.85 14.85 0 0011.58 0a.06.06 0 00-.06.03c-.17.3-.35.7-.48 1.01a13.72 13.72 0 00-4.08 0A10.24 10.24 0 006.48.03.06.06 0 006.42 0a14.8 14.8 0 00-3.67 1.23.05.05 0 00-.03.02C.41 5.1-.25 8.86.08 12.57a.07.07 0 00.03.05 14.92 14.92 0 004.5 2.27.06.06 0 00.07-.02c.35-.47.66-.97.93-1.5a.06.06 0 00-.03-.08 9.82 9.82 0 01-1.4-.67.06.06 0 010-.1l.28-.22a.06.06 0 01.06 0c2.93 1.34 6.1 1.34 9 0a.06.06 0 01.06 0l.28.22a.06.06 0 010 .1 9.2 9.2 0 01-1.4.67.06.06 0 00-.04.08c.28.53.59 1.03.93 1.5a.06.06 0 00.07.02 14.87 14.87 0 004.5-2.27.06.06 0 00.04-.05c.37-3.84-.62-7.57-2.64-10.7a.05.05 0 00-.03-.02zM6 10.28c-.88 0-1.6-.8-1.6-1.79S5.1 6.7 6 6.7s1.62.8 1.6 1.79c0 .99-.73 1.79-1.6 1.79zm5.93 0c-.88 0-1.6-.8-1.6-1.79s.72-1.79 1.6-1.79c.9 0 1.61.8 1.6 1.79 0 .99-.7 1.79-1.6 1.79z"/></svg>
+      Discord FMH
+    </div>
+    <div class="nav-avatar" id="navAvatar" onclick="showPage('profile')"></div>
+    <button class="hamburger" onclick="toggleSidebar()"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<main>
+<!-- SIDEBAR (mobile) -->
+<div class="sidebar" id="sidebar">
+  <div class="mobile-nav-header">
+    <span style="font-family:'Bebas Neue';font-size:1.2rem;letter-spacing:2px">ALBUM <span style="color:var(--blue)">HMX</span></span>
+    <button class="modal-close" onclick="toggleSidebar()">✕</button>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Menú</div>
+    <button class="sidebar-item active" id="sb-home" onclick="showPage('home');toggleSidebar()"><span class="icon">🏠</span>Inicio</button>
+    <button class="sidebar-item" id="sb-packs" onclick="showPage('packs');toggleSidebar()"><span class="icon">⬜</span>Abrir Sobres</button>
+    <button class="sidebar-item" id="sb-album" onclick="showPage('album');toggleSidebar()"><span class="icon">📖</span>Mi Álbum</button>
+    <button class="sidebar-item" id="sb-trade" onclick="showPage('trade');toggleSidebar()"><span class="icon">🔄</span>Tradear</button>
+    <button class="sidebar-item" id="sb-redeem" onclick="showPage('redeem');toggleSidebar()"><span class="icon">🎟️</span>Canjear Código</button>
+    <button class="sidebar-item" id="sb-ranking" onclick="showPage('ranking');toggleSidebar()"><span class="icon">🏆</span>Ranking</button>
+    <button class="sidebar-item" id="sb-profile" onclick="showPage('profile');toggleSidebar()"><span class="icon">👤</span>Perfil</button>
+    <button class="sidebar-item" id="sb-admin" onclick="showPage('admin');toggleSidebar()" style="display:none"><span class="icon">🔐</span>Admin</button>
+  </div>
+  <div class="sidebar-bottom">
+    <div class="sidebar-user">
+      <div class="nav-avatar" id="sbAvatar" style="width:36px;height:36px"></div>
+      <div>
+        <div class="sidebar-user-name" id="sbName"></div>
+        <div class="sidebar-user-sub" id="sbCoins"></div>
+      </div>
+    </div>
+    <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:.8rem" onclick="doLogout()">Cerrar sesión</button>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+<!-- ═══ HOME ═══ -->
+<div class="page active" id="page-home">
+  <div class="home-hero">
+    <div class="home-hero-text">
+      <h1>COLECCIONA<br>A LOS <span>MEJORES</span></h1>
+      <p>El álbum oficial de la comunidad HaxBall México. Abre sobres, colecciona jugadores y compite.</p>
+      <div class="hero-btns">
+        <button class="btn btn-primary" onclick="showPage('packs')">⬜ Abrir Sobres</button>
+        <button class="btn btn-ghost" onclick="showPage('album')">📖 Ver Álbum</button>
+      </div>
+    </div>
+    <div class="hero-cards" id="heroDemoCards"></div>
+  </div>
+
+  <!-- Daily -->
+  <div class="daily-banner" id="dailyBanner">
+    <div>
+      <h3>⬜ Sobre Diario Gratuito</h3>
+      <p>Recibe un sobre básico gratis cada 24 horas</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+      <div id="dailyTimerWrap">
+        <div style="font-size:.7rem;color:var(--text2);margin-bottom:2px">Próximo en</div>
+        <div class="countdown-display" id="dailyCountdown">--:--:--</div>
+      </div>
+      <button class="btn btn-primary" id="dailyBtn" onclick="claimDaily()">¡Reclamar!</button>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.8rem;margin-bottom:1.5rem">
+    <div class="card-surface stat-box"><div class="label">Álbum</div><div class="val blue" id="hStatAlbum">0%</div><div class="sub" id="hStatCards">0/0</div></div>
+    <div class="card-surface stat-box"><div class="label">Sobres</div><div class="val" id="hStatPacks">0</div><div class="sub">abiertos</div></div>
+    <div class="card-surface stat-box"><div class="label">Repetidas</div><div class="val" style="color:var(--red)" id="hStatDupes">0</div><div class="sub">para tradear</div></div>
+    <div class="card-surface stat-box"><div class="label">Monedas</div><div class="val" style="color:var(--gold)" id="hStatCoins">0</div><div class="sub">disponibles</div></div>
+    <div class="card-surface stat-box"><div class="label">Ranking</div><div class="val" style="color:var(--blue)" id="hStatRank">#—</div><div class="sub">global</div></div>
+  </div>
+
+  <!-- Progress -->
+  <div class="card-surface" style="padding:1.2rem;margin-bottom:1.5rem">
+    <div style="display:flex;justify-content:space-between;margin-bottom:.5rem">
+      <span style="font-weight:700">📖 Progreso del Álbum</span>
+      <span style="font-family:'Space Mono';color:var(--blue);font-weight:700" id="hPct">0%</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill fill-blue" id="hProgressFill" style="width:0%"></div></div>
+    <div style="display:flex;gap:1.2rem;flex-wrap:wrap;margin-top:.8rem;font-size:.75rem;color:var(--text2)" id="hProgressDetail"></div>
+  </div>
+
+  <!-- News -->
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem">
+    <span style="font-weight:700;font-size:1rem">📢 Noticias</span>
+  </div>
+  <div class="news-grid" id="homeNewsGrid"></div>
+</div>
+
+<!-- ═══ PACKS ═══ -->
+<div class="page" id="page-packs">
+  <div class="page-header">
+    <h1>⬜ ABRIR SOBRES</h1>
+    <p>Elige tu sobre y descubre quién te espera</p>
+  </div>
+  <div class="packs-row" id="packsRow"></div>
+
+  <div style="margin-top:2rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem">
+    <span style="font-weight:700">🕓 Historial de Sobres</span>
+  </div>
+  <div class="history-list" id="packHistory"></div>
+</div>
+
+<!-- ═══ ALBUM ═══ -->
+<div class="page" id="page-album">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.8rem">
+    <div class="page-header" style="margin:0">
+      <h1>📖 MI ÁLBUM</h1>
+      <p>Selecciona una carta de tu mano y colócala en su espacio</p>
+    </div>
+  </div>
+
+  <div class="card-surface" style="padding:1rem;margin-bottom:1rem">
+    <div style="display:flex;justify-content:space-between;margin-bottom:.4rem">
+      <span style="font-weight:700;font-size:.9rem">Progreso</span>
+      <span style="font-family:'Space Mono';color:var(--blue);font-size:.85rem" id="albumPct">0%</span>
+    </div>
+    <div class="progress-track" style="height:6px"><div class="progress-fill fill-blue" id="albumProgressFill" style="width:0%"></div></div>
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:.6rem;font-size:.72rem;color:var(--text2)" id="albumDetail"></div>
+  </div>
+
+  <!-- Rarity tabs -->
+  <div id="albumRarityTabs" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem"></div>
+
+  <!-- Album book -->
+  <div class="album-outer">
+    <div class="album-book" id="albumBook" style="min-width:unset;width:100%"></div>
+  </div>
+
+  <!-- Hand -->
+  <div class="card-surface" style="padding:1rem;margin-top:1rem">
+    <div style="font-weight:700;font-size:.88rem;margin-bottom:.6rem">🖐️ Tus cartas por colocar</div>
+    <div id="albumHand" style="display:flex;flex-wrap:wrap;gap:6px;min-height:60px;align-items:flex-start"></div>
+  </div>
+</div>
+
+<!-- ═══ TRADE ═══ -->
+<div class="page" id="page-trade">
+  <div class="page-header"><h1>🔄 TRADES</h1><p>Intercambia cartas con otros jugadores</p></div>
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4rem 2rem;text-align:center">
+    <div style="font-size:4rem;margin-bottom:1.5rem">🔧</div>
+    <div style="font-family:'Bebas Neue';font-size:2rem;letter-spacing:3px;margin-bottom:.8rem;color:var(--gold)">EN MANTENIMIENTO</div>
+    <div style="color:var(--text2);font-size:.95rem;max-width:420px;line-height:1.6">El sistema de trades está temporalmente desactivado mientras realizamos mejoras. Vuelve pronto, ¡estará mejor que nunca!</div>
+    <div style="margin-top:2rem;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:1rem 2rem;font-size:.8rem;color:var(--text3)">⏳ Próximamente disponible</div>
+  </div>
+</div>
+
+<!-- ═══ REDEEM ═══ -->
+<div class="page" id="page-redeem">
+  <div class="page-header"><h1>🎟️ CANJEAR CÓDIGO</h1><p>Introduce un código para recibir monedas o sobres</p></div>
+  <div style="max-width:480px;margin:0 auto">
+    <div class="card-surface" style="padding:2rem;text-align:center">
+      <div style="font-size:3rem;margin-bottom:1rem">🎁</div>
+      <div style="font-weight:700;font-size:1.1rem;margin-bottom:.5rem">¿Tienes un código?</div>
+      <div style="color:var(--text2);font-size:.85rem;margin-bottom:1.5rem">Introduce tu código promocional para reclamar monedas o sobres especiales</div>
+      <div class="form-field" style="margin-bottom:1rem">
+        <input id="redeemInput" placeholder="CÓDIGO-AQUÍ" style="text-align:center;font-family:'Space Mono';font-size:1rem;letter-spacing:2px;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()">
+      </div>
+      <button class="btn btn-primary" style="width:100%" onclick="redeemCode()">✨ Canjear</button>
+      <div id="redeemMsg" style="margin-top:1rem;font-size:.85rem;min-height:20px"></div>
+    </div>
+    <div class="card-surface" style="padding:1.2rem;margin-top:1rem">
+      <div style="font-weight:700;font-size:.88rem;margin-bottom:.8rem">📦 Sobres en inventario</div>
+      <div id="redeemPackInv" style="font-size:.8rem;color:var(--text2)">Sin sobres en inventario</div>
+    </div>
+    <div class="card-surface" style="padding:1.2rem;margin-top:1rem">
+      <div style="font-weight:700;font-size:.88rem;margin-bottom:.8rem">📋 Últimos canjes</div>
+      <div id="redeemHistory" style="font-size:.8rem;color:var(--text2)">Sin canjes aún</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ RANKING ═══ -->
+<div class="page" id="page-ranking">
+  <div class="page-header"><h1>🏆 RANKING</h1><p>Los mejores coleccionistas de HMX</p></div>
+  <div class="rank-table">
+    <div class="rank-head"><span>#</span><span>Usuario</span><span style="text-align:center">Cartas</span><span style="text-align:center">Sobres</span><span style="text-align:center">Pts</span></div>
+    <div id="rankingBody"></div>
+  </div>
+</div>
+
+<!-- ═══ PROFILE ═══ -->
+<div class="page" id="page-profile">
+  <div class="profile-hero">
+    <div class="profile-av" id="profAvatar"></div>
+    <div class="profile-info">
+      <h2 id="profName"></h2>
+      <div style="color:var(--text2);font-size:.82rem" id="profSub"></div>
+      <div class="level-chip" id="profLevel"></div>
+      <div style="font-size:.7rem;color:var(--text3);margin-top:6px" id="profXpText"></div>
+      <div class="xp-bar"><div class="xp-fill" id="profXpFill"></div></div>
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="doLogout()">Cerrar sesión</button>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.8rem;margin-bottom:1.5rem" id="profileStats"></div>
+
+  <div style="font-weight:700;margin-bottom:.8rem">🏅 Logros</div>
+  <div class="ach-grid" id="profileAch"></div>
+</div>
+
+<!-- ═══ ADMIN ═══ -->
+<div class="page" id="page-admin">
+  <div class="page-header"><h1>🔐 PANEL ADMIN</h1><p>Gestión de cartas y usuarios — Solo administradores</p></div>
+  <div class="admin-tabs">
+    <button class="admin-tab-btn active" onclick="switchAdminTab('cards')">🃏 Cartas</button>
+    <button class="admin-tab-btn" onclick="switchAdminTab('users')">👥 Usuarios</button>
+    <button class="admin-tab-btn" onclick="switchAdminTab('rewards')">🎁 Recompensas</button>
+    <button class="admin-tab-btn" onclick="switchAdminTab('news')">📢 Noticias</button>
+    <button class="admin-tab-btn" onclick="switchAdminTab('codes')">🎟️ Códigos</button>
+    <button class="admin-tab-btn" onclick="switchAdminTab('design')">🎨 Diseño</button>
+  </div>
+
+  <!-- CARDS -->
+  <div id="adminSection-cards" class="admin-section active">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+      <div class="card-surface" style="padding:1.5rem">
+        <div style="font-weight:700;font-size:1rem;margin-bottom:1rem" id="adminFormTitle">➕ Añadir Carta</div>
+        <div class="admin-form">
+          <input type="hidden" id="editingCardId">
+          <div class="form-row">
+            <div class="form-field"><label>Nombre</label><input id="cardName" placeholder="El Matador"></div>
+            <div class="form-field"><label>Rating (1-99)</label><input id="cardRating" type="number" min="1" max="99" placeholder="85"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-field"><label>Equipo</label><input id="cardTeam" placeholder="Águilas MX"></div>
+            <div class="form-field"><label>Posición</label>
+              <select id="cardPos"><option>DEL</option><option>EXT</option><option>MC</option><option>DF</option><option>POR</option></select>
+            </div>
+          </div>
+          <div class="form-field"><label>Rareza</label>
+            <select id="cardRarity">
+              <option value="common">⬜ Común</option>
+              <option value="silver">🥈 Plata</option>
+              <option value="gold">🥇 Oro</option>
+              <option value="epic">💜 Épica</option>
+              <option value="legend">🔱 Leyenda</option>
+              <option value="campeones">🏆 Campeones</option>
+              <option value="america">🌎 Campeones de América</option>
+            </select>
+          </div>
+          <div class="form-field"><label>Color del círculo (hex)</label><input id="cardColor" placeholder="#3b82f6" value="#3b82f6"></div>
+          <div class="form-field"><label>Iniciales del círculo (máx. 2 letras)</label><input id="cardInitials" placeholder="EJ" maxlength="2" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div>
+          <div style="display:flex;gap:.8rem">
+            <button class="btn btn-primary" onclick="saveCard()" style="flex:1" id="adminSaveBtn">💾 Guardar carta</button>
+            <button class="btn btn-ghost" onclick="cancelEditCard()" id="adminCancelBtn" style="display:none">Cancelar</button>
+          </div>
+        </div>
+      </div>
+      <div class="card-surface" style="padding:1.5rem">
+        <div style="font-weight:700;font-size:1rem;margin-bottom:1rem">📋 Cartas (<span id="adminCardCount">0</span>)</div>
+        <div class="admin-cards-list" id="adminCardList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- USERS -->
+  <div id="adminSection-users" class="admin-section">
+    <div class="card-surface" style="padding:1.5rem">
+      <div style="font-weight:700;font-size:1rem;margin-bottom:1rem">👥 Usuarios registrados</div>
+      <div id="adminUserList"></div>
+    </div>
+  </div>
+
+  <!-- REWARDS -->
+  <div id="adminSection-rewards" class="admin-section">
+    <div class="card-surface" style="padding:1.5rem">
+      <div style="font-weight:700;font-size:1rem;margin-bottom:1rem">🎁 Dar Recompensas a Usuarios</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem">
+        <div class="admin-form">
+          <div class="form-field"><label>Usuario</label><select id="rewardUser"></select></div>
+          <div class="form-field"><label>Tipo</label>
+            <select id="rewardType" onchange="toggleRewardFields()">
+              <option value="coins">🪙 Monedas</option>
+              <option value="pack">⬜ Sobres</option>
+              <option value="card">🃏 Carta específica</option>
+            </select>
+          </div>
+          <div id="rewardCoinsField" class="form-field"><label>Cantidad de monedas</label><input id="rewardCoins" type="number" min="1" placeholder="500"></div>
+          <div id="rewardPackField" style="display:none">
+            <div class="form-row">
+              <div class="form-field"><label>Tipo de sobre</label>
+                <select id="rewardPackType">
+                  <option value="basico">⬜ Básico</option>
+                  <option value="plata">🥈 Plata</option>
+                  <option value="oro">🥇 Oro</option>
+                  <option value="epico">💜 Épico</option>
+                  <option value="leyenda">🔱 Leyenda</option>
+                </select>
+              </div>
+              <div class="form-field"><label>Cantidad</label><input id="rewardPackQty" type="number" min="1" max="20" placeholder="1"></div>
+            </div>
+          </div>
+          <div id="rewardCardField" style="display:none">
+            <div class="form-field"><label>Carta</label><select id="rewardCardSelect"></select></div>
+          </div>
+          <button class="btn btn-primary" onclick="giveReward()" style="width:100%">🎁 Dar recompensa</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEWS -->
+  <div id="adminSection-news" class="admin-section">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+      <div class="card-surface" style="padding:1.5rem">
+        <div style="font-weight:700;font-size:1rem;margin-bottom:1rem" id="newsFormTitle">📢 Crear Noticia</div>
+        <div class="admin-form">
+          <input type="hidden" id="editingNewsId">
+          <div class="form-field"><label>Título</label><input id="newsTitle" placeholder="Título de la noticia"></div>
+          <div class="form-field"><label>Tag (Anuncio, Torneo, Sistema…)</label><input id="newsTag" placeholder="Anuncio"></div>
+          <div class="form-field"><label>Emoji / Ícono</label><input id="newsEmoji" placeholder="📢" maxlength="4"></div>
+          <div class="form-field"><label>Color de fondo (ej: linear-gradient(135deg,#0f2040,#1a3a6a))</label><input id="newsBg" placeholder="linear-gradient(135deg,#0f2040,#1a3a6a)"></div>
+          <div style="display:flex;gap:.8rem">
+            <button class="btn btn-primary" onclick="saveNews()" style="flex:1" id="newsSaveBtn">💾 Publicar</button>
+            <button class="btn btn-ghost" onclick="cancelEditNews()" id="newsCancelBtn" style="display:none">Cancelar</button>
+          </div>
+        </div>
+      </div>
+      <div class="card-surface" style="padding:1.5rem">
+        <div style="font-weight:700;font-size:1rem;margin-bottom:1rem">📋 Noticias publicadas</div>
+        <div id="adminNewsList" style="display:flex;flex-direction:column;gap:8px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CODES -->
+  <div id="adminSection-codes" class="admin-section">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+      <div class="card-surface" style="padding:1.5rem">
+        <div style="font-weight:700;font-size:1rem;margin-bottom:1rem">🎟️ Crear Código</div>
+        <div class="admin-form">
+          <div class="form-field"><label>Código (texto único)</label><input id="codeKey" placeholder="VERANO2025" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase().replace(/\s/g,'')"></div>
+          <div class="form-field"><label>Tipo</label>
+            <select id="codeType" onchange="toggleCodeFields()">
+              <option value="coins">🪙 Monedas</option>
+              <option value="pack">⬜ Sobres</option>
+            </select>
+          </div>
+          <div id="codeCoinsField" class="form-field"><label>Cantidad de monedas</label><input id="codeCoins" type="number" min="1" placeholder="1000"></div>
+          <div id="codePackField" style="display:none">
+            <div class="form-row">
+              <div class="form-field"><label>Tipo de sobre</label>
+                <select id="codePackType">
+                  <option value="basico">⬜ Básico</option>
+                  <option value="plata">🥈 Plata</option>
+                  <option value="oro">🥇 Oro</option>
+                  <option value="epico">💜 Épico</option>
+                  <option value="leyenda">🔱 Leyenda</option>
+                </select>
+              </div>
+              <div class="form-field"><label>Cantidad</label><input id="codePackQty" type="number" min="1" max="10" placeholder="1"></div>
+            </div>
+          </div>
+          <div class="form-field"><label>Usos máximos (0 = ilimitado)</label><input id="codeMaxUses" type="number" min="0" placeholder="0"></div>
+          <button class="btn btn-primary" onclick="saveCode()" style="width:100%">✅ Crear código</button>
+        </div>
+      </div>
+      <div class="card-surface" style="padding:1.5rem">
+        <div style="font-weight:700;font-size:1rem;margin-bottom:1rem">📋 Códigos activos</div>
+        <div id="adminCodeList" style="display:flex;flex-direction:column;gap:8px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DESIGN -->
+  <div id="adminSection-design" class="admin-section">
+    <div class="card-surface" style="padding:1.5rem">
+      <div style="font-weight:700;font-size:1rem;margin-bottom:1rem">🎨 Editor de Diseño</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.5rem">
+        <div class="admin-form">
+          <div style="font-weight:700;font-size:.85rem;margin-bottom:.6rem;color:var(--text2);text-transform:uppercase;letter-spacing:.8px">🔗 Links</div>
+          <div class="form-field"><label>URL del Discord</label><input id="cfgDiscordUrl" placeholder="https://discord.gg/..."></div>
+          <button class="btn btn-primary btn-sm" onclick="saveDesignConfig()" style="width:100%">💾 Guardar links</button>
+        </div>
+        <div class="admin-form">
+          <div style="font-weight:700;font-size:.85rem;margin-bottom:.6rem;color:var(--text2);text-transform:uppercase;letter-spacing:.8px">🎨 Colores principales</div>
+          <div class="form-row">
+            <div class="form-field"><label>Color primario</label><input id="cfgColorBlue" type="color" value="#3b82f6"></div>
+            <div class="form-field"><label>Fondo principal</label><input id="cfgColorBg" type="color" value="#0a0c10"></div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="saveDesignConfig()" style="width:100%">💾 Aplicar colores</button>
+        </div>
+        <div class="admin-form">
+          <div style="font-weight:700;font-size:.85rem;margin-bottom:.6rem;color:var(--text2);text-transform:uppercase;letter-spacing:.8px">✏️ Textos de la app</div>
+          <div class="form-field"><label>Título del álbum (nav)</label><input id="cfgAppTitle" placeholder="ALBUM HMX"></div>
+          <div class="form-field"><label>Tagline de inicio</label><input id="cfgHeroText" placeholder="Colecciona a los mejores"></div>
+          <div class="form-field"><label>Subtexto de inicio</label><input id="cfgHeroSub" placeholder="El álbum oficial de la comunidad..."></div>
+          <button class="btn btn-primary btn-sm" onclick="saveDesignConfig()" style="width:100%">💾 Guardar textos</button>
+        </div>
+        <div class="admin-form">
+          <div style="font-weight:700;font-size:.85rem;margin-bottom:.6rem;color:var(--text2);text-transform:uppercase;letter-spacing:.8px">🔐 Pantalla de login</div>
+          <div class="form-field"><label>Título del login</label><input id="cfgLoginTitle" placeholder="ALBUM HMX"></div>
+          <div class="form-field"><label>Subtítulo del login</label><input id="cfgLoginSub" placeholder="HaxBall México · Temporada 2025"></div>
+          <button class="btn btn-primary btn-sm" onclick="saveDesignConfig()" style="width:100%">💾 Guardar</button>
+        </div>
+      </div>
+      <div style="margin-top:1rem;padding:.8rem;background:var(--bg2);border-radius:8px;font-size:.75rem;color:var(--text3)">
+        💡 Los cambios se aplican al instante y persisten para todos los usuarios.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</div><!-- /content -->
+</main>
+</div><!-- /app -->
+
+<!-- ═══ PACK OPENING MODAL ═══ -->
+<div class="modal-backdrop" id="packModal">
+  <div class="modal-box" style="max-width:620px;text-align:center">
+    <button class="modal-close" onclick="closePackModal()">✕</button>
+    <div id="packOpenStage">
+      <div class="open-title" id="packOpenTitle">SOBRE BÁSICO</div>
+      <div class="big-pack-wrap" id="bigPack" onclick="revealPackCards()">
+        <div id="bigPackEmoji" style="font-size:3.5rem">⬜</div>
+        <div style="font-size:.6rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;opacity:.7;margin-top:6px">HMX 2025</div>
+      </div>
+      <div class="open-hint">Toca el sobre para abrirlo</div>
+    </div>
+    <div class="cards-result" id="cardsResult"></div>
+    <div id="packModalActions" style="display:none;justify-content:center;gap:.8rem;margin-top:1.2rem">
+      <button class="btn btn-ghost" onclick="closePackModal();showPage('album')">Ver en Álbum</button>
+      <button class="btn btn-primary" onclick="reOpenPack()">Abrir otro</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- CARD PREVIEW MODAL -->
+<div class="modal-backdrop" id="cardPreviewModal" onclick="closeCardPreview(event)">
+  <div class="modal-box" style="max-width:380px;text-align:center;background:var(--bg2)" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeCardPreviewModal()">✕</button>
+    <div id="cardPreviewContent" style="display:flex;flex-direction:column;align-items:center;gap:1rem;padding:.5rem 0"></div>
+    <div id="cardPreviewActions" style="display:flex;gap:.8rem;justify-content:center;margin-top:.5rem;flex-wrap:wrap"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════
+// STORAGE HELPERS
+// ═══════════════════════════════════
+const DB = {
+  get:(k)=>{ try{return JSON.parse(localStorage.getItem(k))}catch{return null}},
+  set:(k,v)=>localStorage.setItem(k,JSON.stringify(v)),
+  del:(k)=>localStorage.removeItem(k)
+};
+
+// ═══════════════════════════════════
+// INITIAL DATA
+// ═══════════════════════════════════
+function initDB(){
+  if(!DB.get('hmx_users')) DB.set('hmx_users',[{
+    username:'admin',password:'bebeynena',isAdmin:true,
+    coins:9999,packs:0,cards:[],dupes:[],trades:[],packHistory:[],redeemHistory:[],
+    level:10,xp:9000,joinDate:Date.now()
+  }]);
+  if(!DB.get('hmx_cards')) DB.set('hmx_cards',[
+    {id:'c1',name:'El Matador',team:'Águilas MX',pos:'DEL',rating:97,rarity:'legend',color:'#f97316',initials:'EM'},
+    {id:'c2',name:'La Sombra',team:'Rayos FC',pos:'MC',rating:92,rarity:'legend',color:'#8b5cf6',initials:'LS'},
+    {id:'c3',name:'El Tifón',team:'Los Gallos',pos:'DEL',rating:90,rarity:'legend',color:'#ef4444',initials:'ET'},
+    {id:'c4',name:'El Muro',team:'Tiburones',pos:'POR',rating:93,rarity:'epic',color:'#a855f7',initials:'MU'},
+    {id:'c5',name:'La Pantera',team:'Águilas MX',pos:'EXT',rating:89,rarity:'epic',color:'#ec4899',initials:'LP'},
+    {id:'c6',name:'El Cobra',team:'Lobos MTY',pos:'EXT',rating:87,rarity:'epic',color:'#22d3ee',initials:'CO'},
+    {id:'c7',name:'El Halcón',team:'Rayos FC',pos:'MC',rating:88,rarity:'gold',color:'#f59e0b',initials:'HA'},
+    {id:'c8',name:'Relámpago',team:'Lobos MTY',pos:'MC',rating:85,rarity:'gold',color:'#fbbf24',initials:'RE'},
+    {id:'c9',name:'El Fantasma',team:'Piratas',pos:'DEL',rating:83,rarity:'gold',color:'#60a5fa',initials:'FA'},
+    {id:'c10',name:'El Coyote',team:'Bravos',pos:'DF',rating:82,rarity:'gold',color:'#34d399',initials:'CY'},
+    {id:'c11',name:'El Delfín',team:'Tiburones',pos:'MC',rating:80,rarity:'gold',color:'#38bdf8',initials:'DE'},
+    {id:'c12',name:'El Escorpión',team:'Los Gallos',pos:'MC',rating:79,rarity:'silver',color:'#94a3b8',initials:'ES'},
+    {id:'c13',name:'La Víbora',team:'Rayos FC',pos:'EXT',rating:77,rarity:'silver',color:'#6ee7b7',initials:'VI'},
+    {id:'c14',name:'El Oso',team:'Osos MTY',pos:'DF',rating:76,rarity:'silver',color:'#a78bfa',initials:'OS'},
+    {id:'c15',name:'El Lince',team:'Lobos MTY',pos:'DF',rating:75,rarity:'silver',color:'#fb923c',initials:'LI'},
+    {id:'c16',name:'El Toro',team:'Bravos',pos:'DF',rating:74,rarity:'silver',color:'#f87171',initials:'TO'},
+    {id:'c17',name:'El Pingüino',team:'Osos MTY',pos:'POR',rating:73,rarity:'silver',color:'#67e8f9',initials:'PI'},
+    {id:'c18',name:'El Zorro',team:'Piratas',pos:'MC',rating:72,rarity:'silver',color:'#fdba74',initials:'ZO'},
+    {id:'c19',name:'El Puma',team:'Águilas MX',pos:'EXT',rating:71,rarity:'silver',color:'#86efac',initials:'PU'},
+    {id:'c20',name:'La Cobra',team:'Rayos FC',pos:'DF',rating:70,rarity:'silver',color:'#c4b5fd',initials:'LC'},
+    {id:'c21',name:'El Rayo',team:'Tiburones',pos:'EXT',rating:68,rarity:'common',color:'#64748b',initials:'RY'},
+    {id:'c22',name:'El Águila',team:'Águilas MX',pos:'DEL',rating:66,rarity:'common',color:'#475569',initials:'AG'},
+    {id:'c23',name:'El León',team:'Bravos',pos:'DF',rating:65,rarity:'common',color:'#334155',initials:'LE'},
+    {id:'c24',name:'El Gato',team:'Piratas',pos:'POR',rating:64,rarity:'common',color:'#1e3a5f',initials:'GT'},
+    {id:'c25',name:'El Perro',team:'Lobos MTY',pos:'DF',rating:63,rarity:'common',color:'#1a2f4a',initials:'PE'},
+    {id:'c26',name:'El Mono',team:'Osos MTY',pos:'MC',rating:62,rarity:'common',color:'#2d3748',initials:'MO'},
+    {id:'c27',name:'El Pato',team:'Los Gallos',pos:'EXT',rating:61,rarity:'common',color:'#374151',initials:'PA'},
+    {id:'c28',name:'El Conejo',team:'Rayos FC',pos:'DEL',rating:60,rarity:'common',color:'#3d4a5c',initials:'CN'},
+    {id:'c29',name:'El Rato',team:'Bravos',pos:'MC',rating:59,rarity:'common',color:'#2c3e50',initials:'RT'},
+    {id:'c30',name:'El Sapo',team:'Tiburones',pos:'DF',rating:58,rarity:'common',color:'#1a3040',initials:'SA'},
+  ]);
+  if(!DB.get('hmx_news')) DB.set('hmx_news',[
+    {id:'n1',title:'¡Album HMX 2025 ya disponible! Abre sobres y colecciona jugadores',tag:'Anuncio',emoji:'📢',bg:'linear-gradient(135deg,#0f2040,#1a3a6a)',date:Date.now()-432000000},
+    {id:'n2',title:'Gana cartas Leyenda completando el Torneo de Verano 2025',tag:'Torneo',emoji:'🏆',bg:'linear-gradient(135deg,#1a1000,#2d1a00)',date:Date.now()-691200000},
+  ]);
+  if(!DB.get('hmx_codes')) DB.set('hmx_codes',[]);
+}
+
+// ═══════════════════════════════════
+// AUTH
+// ═══════════════════════════════════
+let currentUser = null;
+
+function switchAuthTab(t){
+  document.querySelectorAll('.auth-tab').forEach((b,i)=>b.classList.toggle('active',i===(t==='login'?0:1)));
+  document.getElementById('loginForm').style.display = t==='login'?'':'none';
+  document.getElementById('registerForm').style.display = t==='register'?'':'none';
+  document.getElementById('authErr').textContent='';
+}
+
+function doLogin(){
+  const u=document.getElementById('loginUser').value.trim();
+  const p=document.getElementById('loginPass').value;
+  if(!u||!p){setAuthErr('Completa todos los campos');return;}
+  const users=DB.get('hmx_users')||[];
+  const user=users.find(x=>x.username.toLowerCase()===u.toLowerCase()&&x.password===p);
+  if(!user){setAuthErr('Usuario o contraseña incorrectos');return;}
+  currentUser=user;
+  DB.set('hmx_session',u);
+  launchApp();
+}
+
+function doRegister(){
+  const u=document.getElementById('regUser').value.trim();
+  const p=document.getElementById('regPass').value;
+  const p2=document.getElementById('regPass2').value;
+  if(!u||!p){setAuthErr('Completa todos los campos');return;}
+  if(u.length<3){setAuthErr('El nombre debe tener al menos 3 caracteres');return;}
+  if(p.length<4){setAuthErr('La contraseña debe tener al menos 4 caracteres');return;}
+  if(p!==p2){setAuthErr('Las contraseñas no coinciden');return;}
+  const users=DB.get('hmx_users')||[];
+  if(users.find(x=>x.username.toLowerCase()===u.toLowerCase())){setAuthErr('Ese nombre ya está en uso');return;}
+  const newUser={username:u,password:p,isAdmin:false,coins:500,packs:0,cards:[],dupes:[],trades:[],packHistory:[],level:1,xp:0,joinDate:Date.now()};
+  users.push(newUser);
+  DB.set('hmx_users',users);
+  currentUser=newUser;
+  DB.set('hmx_session',u);
+  launchApp();
+}
+
+function setAuthErr(msg){document.getElementById('authErr').textContent=msg;}
+
+function doLogout(){
+  currentUser=null;
+  DB.del('hmx_session');
+  document.getElementById('app').classList.remove('show');
+  document.getElementById('authScreen').style.display='flex';
+  switchAuthTab('login');
+  document.getElementById('loginUser').value='';
+  document.getElementById('loginPass').value='';
+}
+
+function saveUser(){
+  const users=DB.get('hmx_users')||[];
+  const idx=users.findIndex(x=>x.username===currentUser.username);
+  if(idx>=0)users[idx]=currentUser;
+  DB.set('hmx_users',users);
+}
+
+function launchApp(){
+  document.getElementById('authScreen').style.display='none';
+  document.getElementById('app').classList.add('show');
+  applyDesignConfig();
+  // Admin button
+  document.getElementById('sb-admin').style.display=currentUser.isAdmin?'flex':'none';
+  if(currentUser.isAdmin){
+    const adminBtn=document.createElement('button');
+    adminBtn.className='nav-btn';adminBtn.id='nb-admin';
+    adminBtn.textContent='🔐 Admin';
+    adminBtn.onclick=()=>showPage('admin');
+    document.querySelector('.nav-center').appendChild(adminBtn);
+  }
+  updateNavCoins();
+  showPage('home');
+  startCountdown();
+}
+
+function updateNavCoins(){
+  if(!currentUser)return;
+  document.getElementById('navCoins').textContent='🪙 '+currentUser.coins.toLocaleString();
+  const initials=currentUser.username.substring(0,2).toUpperCase();
+  const color=stringToColor(currentUser.username);
+  ['navAvatar','sbAvatar'].forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    el.textContent=initials;el.style.background=color;
+  });
+  document.getElementById('sbName').textContent=currentUser.username;
+  document.getElementById('sbCoins').textContent='🪙 '+currentUser.coins.toLocaleString();
+}
+
+function stringToColor(s){
+  let h=0;for(let i=0;i<s.length;i++)h=s.charCodeAt(i)+((h<<5)-h);
+  return `hsl(${h%360},60%,45%)`;
+}
+
+// ═══════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn,.sidebar-item').forEach(b=>b.classList.remove('active'));
+  const page=document.getElementById('page-'+id);
+  if(page)page.classList.add('active');
+  ['nb-'+id,'sb-'+id].forEach(bid=>{const b=document.getElementById(bid);if(b)b.classList.add('active');});
+  window.scrollTo(0,0);
+  // Render per page
+  const renders={home:renderHome,packs:renderPacks,album:renderAlbum,trade:renderTrade,redeem:renderRedeem,ranking:renderRanking,profile:renderProfile,admin:renderAdmin};
+  if(renders[id])renders[id]();
+}
+
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('show');}
+
+// ═══════════════════════════════════
+// CARDS HELPERS
+// ═══════════════════════════════════
+const rarityData={
+  common:{label:'Común',icon:'⬜',color:'var(--silver)',glow:'rgba(148,163,184,.2)',class:'r-common c-common'},
+  silver:{label:'Plata',icon:'🥈',color:'#94a3b8',glow:'rgba(148,163,184,.3)',class:'r-silver c-silver'},
+  gold:{label:'Oro',icon:'🥇',color:'var(--gold)',glow:'var(--gold-glow)',class:'r-gold c-gold'},
+  epic:{label:'Épica',icon:'💜',color:'var(--epic)',glow:'var(--epic-glow)',class:'r-epic c-epic'},
+  legend:{label:'Leyenda',icon:'🔱',color:'var(--legend)',glow:'var(--legend-glow)',class:'r-legend c-legend'},
+  campeones:{label:'Campeones',icon:'🏆',color:'#38bdf8',glow:'rgba(56,189,248,.4)',class:'r-campeones c-campeones'},
+  america:{label:'Campeones de América',icon:'🌎',color:'#0ea5e9',glow:'rgba(14,165,233,.6)',class:'r-america c-america'},
+};
+
+function buildHaxCard(card, size=90){
+  const h=Math.round(size*1.42);
+  const rd=rarityData[card.rarity]||rarityData.common;
+  const circleSize=Math.round(size*.62);
+  const fontSize=Math.round(circleSize*.4);
+  const label=card.initials||(card.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase());
+  const circleContent=`<span style="font-size:${fontSize}px;font-family:'Bebas Neue'">${label}</span>`;
+  return `<div class="hax-card ${rd.class.split(' ')[0]}" style="width:${size}px;height:${h}px" title="${card.name} · ${rd.label}">
+    <div class="card-top">
+      <div><div class="card-rating" style="font-size:${Math.round(size*.2)}px">${card.rating}</div><div class="card-pos" style="font-size:${Math.round(size*.07)}px">${card.pos}</div></div>
+      <div style="text-align:right"><div class="card-rarity-icon">${rd.icon}</div><div class="card-team-tag" style="font-size:${Math.round(size*.065)}px">${card.team}</div></div>
+    </div>
+    <div class="hax-circle-wrap">
+      <div class="hax-circle ${rd.class.split(' ')[1]}" style="width:${circleSize}px;height:${circleSize}px;box-shadow:0 0 ${Math.round(size*.2)}px ${rd.glow}">
+        ${circleContent}
+      </div>
+    </div>
+    <div class="card-bottom">
+      <div class="card-name" style="font-size:${Math.round(size*.075)}px">${card.name}</div>
+      <div class="card-team-name" style="font-size:${Math.round(size*.063)}px">${card.team}</div>
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════
+// HOME
+// ═══════════════════════════════════
+function renderHome(){
+  if(!currentUser)return;
+  const allCards=DB.get('hmx_cards')||[];
+  const myCards=currentUser.cards||[];
+  const myDupes=currentUser.dupes||[];
+  const total=allCards.length;
+  const owned=myCards.length;
+  const pct=total?Math.round(owned/total*100):0;
+
+  document.getElementById('hStatAlbum').textContent=pct+'%';
+  document.getElementById('hStatCards').textContent=`${owned}/${total}`;
+  document.getElementById('hStatPacks').textContent=currentUser.packs||0;
+  document.getElementById('hStatDupes').textContent=myDupes.length;
+  document.getElementById('hStatCoins').textContent=(currentUser.coins||0).toLocaleString();
+  document.getElementById('hPct').textContent=pct+'%';
+  document.getElementById('hProgressFill').style.width=pct+'%';
+
+  // Ranking position
+  const users=DB.get('hmx_users')||[];
+  const sorted=[...users].filter(u=>!u.isAdmin).sort((a,b)=>(b.cards||[]).length-(a.cards||[]).length);
+  const myRank=currentUser.isAdmin?null:sorted.findIndex(u=>u.username===currentUser.username)+1;
+  document.getElementById('hStatRank').textContent=myRank?`#${myRank}`:'#—';
+
+  // Progress detail
+  const rarities=['america','legend','campeones','epic','gold','silver','common'];
+  const detail=rarities.map(r=>{
+    const total2=allCards.filter(c=>c.rarity===r).length;
+    const owned2=myCards.filter(id=>{const c=allCards.find(x=>x.id===id);return c&&c.rarity===r;}).length;
+    const rd=rarityData[r];
+    return `<span>${rd.icon} <strong>${rd.label}:</strong> ${owned2}/${total2}</span>`;
+  });
+  document.getElementById('hProgressDetail').innerHTML=detail.join('');
+
+  // Hero demo cards
+  const legendCards=allCards.filter(c=>c.rarity==='legend').slice(0,3);
+  document.getElementById('heroDemoCards').innerHTML=legendCards.map(c=>buildHaxCard(c,70)).join('');
+
+  // News
+  const news=(DB.get('hmx_news')||[]).slice().reverse().slice(0,4);
+  const newsGrid=document.getElementById('homeNewsGrid');
+  if(newsGrid){
+    newsGrid.innerHTML=news.map(n=>`
+      <div class="news-card">
+        <div class="news-img" style="background:${n.bg||'var(--bg3)'}">${n.emoji||'📢'}</div>
+        <div class="news-body">
+          <div class="news-tag">${n.tag||'Anuncio'}</div>
+          <div class="news-title">${n.title}</div>
+          <div class="news-date">${new Date(n.date).toLocaleDateString('es-MX',{day:'numeric',month:'short',year:'numeric'})}</div>
+        </div>
+      </div>`).join('');
+  }
+
+  // Daily
+  updateDailyBtn();
+}
+
+// ═══════════════════════════════════
+// DAILY PACK
+// ═══════════════════════════════════
+function updateDailyBtn(){
+  if(!currentUser)return;
+  const lastClaim=currentUser.lastDaily||0;
+  const now=Date.now();
+  const diff=now-lastClaim;
+  const ready=diff>=86400000;
+  const btn=document.getElementById('dailyBtn');
+  if(btn){btn.disabled=!ready;btn.style.opacity=ready?1:.5;}
+}
+
+let countdownInterval=null;
+function startCountdown(){
+  if(countdownInterval)clearInterval(countdownInterval);
+  countdownInterval=setInterval(()=>{
+    if(!currentUser)return;
+    const last=currentUser.lastDaily||0;
+    const next=last+86400000;
+    const diff=next-Date.now();
+    const el=document.getElementById('dailyCountdown');
+    if(!el)return;
+    if(diff<=0){el.textContent='¡Disponible!';updateDailyBtn();return;}
+    const h=String(Math.floor(diff/3600000)).padStart(2,'0');
+    const m=String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+    const s=String(Math.floor((diff%60000)/1000)).padStart(2,'0');
+    el.textContent=`${h}:${m}:${s}`;
+  },1000);
+}
+
+function claimDaily(){
+  if(!currentUser)return;
+  const last=currentUser.lastDaily||0;
+  if(Date.now()-last<86400000){showToast('⏳ Ya reclamaste hoy. Vuelve en 24h.');return;}
+  currentUser.lastDaily=Date.now();
+  saveUser();updateDailyBtn();
+  openPackModal('basico');
+}
+
+// ═══════════════════════════════════
+// PACKS
+// ═══════════════════════════════════
+const packDefs=[
+  {id:'basico',label:'Básico',icon:'⬜',bg:'linear-gradient(135deg,#1e293b,#0f172a)',border:'#334155',desc:'5 cartas · Comunes + bonus',price:0,free:true,rarities:['common','common','common','common','silver']},
+  {id:'plata',label:'Plata',icon:'🥈',bg:'linear-gradient(135deg,#1e3a5a,#0f2030)',border:'#475569',desc:'5 cartas · Mínimo 2 de Plata',price:500,free:false,freeDaily:true,rarities:['common','silver','silver','silver','gold']},
+  {id:'oro',label:'Oro',icon:'🥇',bg:'linear-gradient(135deg,#2d1a00,#1a1000)',border:'#f59e0b',desc:'5 cartas · Garantiza 1 Oro',price:1200,rarities:['silver','silver','gold','gold','epic']},
+  {id:'epico',label:'Épico',icon:'💜',bg:'linear-gradient(135deg,#2d1040,#160820)',border:'#a855f7',desc:'5 cartas · Garantiza 1 Épica',price:2500,rarities:['gold','gold','epic','epic','legend']},
+  {id:'leyenda',label:'Leyenda',icon:'🔱',bg:'linear-gradient(135deg,#2d1000,#180800)',border:'#f97316',desc:'5 cartas · Garantiza 1 Leyenda',price:5000,rarities:['gold','epic','legend','legend','legend']},
+];
+
+function renderPacks(){
+  const row=document.getElementById('packsRow');
+  const now=Date.now();
+  row.innerHTML=packDefs.map(p=>{
+    let cdText='';
+    let priceDisplay='';
+    if(p.free){
+      priceDisplay='<div class="pack-price free-tag">🆓 GRATIS</div>';
+    } else if(p.freeDaily){
+      const lastFD=currentUser['lastFreeDaily_'+p.id]||0;
+      const diffFD=86400000-(now-lastFD);
+      if(diffFD<=0){
+        priceDisplay='<div class="pack-price free-tag">🆓 GRATIS HOY</div>';
+        cdText='<div style="font-size:.65rem;color:var(--green);margin-top:2px">✅ Disponible gratis</div>';
+      } else {
+        const h=String(Math.floor(diffFD/3600000)).padStart(2,'0');
+        const m=String(Math.floor((diffFD%3600000)/60000)).padStart(2,'0');
+        priceDisplay=`<div class="pack-price">🪙 ${p.price.toLocaleString()}</div>`;
+        cdText=`<div style="font-size:.65rem;color:var(--text2);margin-top:2px">🆓 gratis en ${h}h ${m}m</div>`;
+      }
+    } else {
+      const last=currentUser['lastPack_'+p.id]||0;
+      const diff=86400000-(now-last);
+      priceDisplay=`<div class="pack-price">🪙 ${p.price.toLocaleString()}</div>`;
+      if(diff>0){
+        const h=String(Math.floor(diff/3600000)).padStart(2,'0');
+        const m=String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+        cdText=`<div style="font-size:.7rem;color:var(--red);margin-top:2px">⏳ ${h}h ${m}m</div>`;
+      }
+    }
+    return `
+    <div class="pack-card" onclick="openPackModal('${p.id}')">
+      <div class="pack-visual" style="background:${p.bg}">
+        <div class="pack-img" style="background:${p.bg};border:2px solid ${p.border}">
+          <span style="font-size:2.5rem">${p.icon}</span>
+          <span>${p.label.toUpperCase()}</span>
+        </div>
+      </div>
+      <div class="pack-label">${p.label}</div>
+      <div class="pack-desc">${p.desc}</div>
+      <div class="pack-footer">
+        <div>${priceDisplay}${cdText}</div>
+        <button class="btn btn-primary btn-sm">Abrir</button>
+      </div>
+    </div>`}).join('');
+
+  // History
+  const hist=document.getElementById('packHistory');
+  const history=(currentUser.packHistory||[]).slice(-10).reverse();
+  if(!history.length){hist.innerHTML='<div style="color:var(--text3);font-size:.85rem;padding:.5rem">Sin historial aún</div>';return;}
+  hist.innerHTML=history.map(h=>`
+    <div class="hist-item">
+      <div class="hist-left">
+        <span class="hist-icon">${h.icon}</span>
+        <div><div class="hist-main">Sobre ${h.pack}</div><div class="hist-sub">${h.cards}</div></div>
+      </div>
+      <div class="hist-date">${timeAgo(h.date)}</div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════
+// PACK MODAL
+// ═══════════════════════════════════
+let currentPackId=null;
+
+function openPackModal(packId){
+  currentPackId=packId;
+  const def=packDefs.find(p=>p.id===packId);
+  if(!def)return;
+  // Check bonus pack inventory (from redeemed codes)
+  const bonusKey='bonusPacks_'+packId;
+  const bonusCount=currentUser[bonusKey]||0;
+  // freeDaily pack (plata): check 24h cooldown before coin check
+  if(def.freeDaily){
+    const lastKey='lastFreeDaily_'+packId;
+    const last=currentUser[lastKey]||0;
+    if(Date.now()-last<86400000){
+      // Not free right now, charge coins
+      if(currentUser.coins<def.price){showToast('⚠️ No tienes suficientes monedas');return;}
+    }
+  } else if(!def.free&&currentUser.coins<def.price){
+    showToast('⚠️ No tienes suficientes monedas');return;
+  }
+  // 24h cooldown per pack type (except daily which has its own)
+  if(!def.free&&!def.freeDaily){
+    const lastKey='lastPack_'+packId;
+    const last=currentUser[lastKey]||0;
+    if(Date.now()-last<86400000){
+      const diff=86400000-(Date.now()-last);
+      const h=String(Math.floor(diff/3600000)).padStart(2,'0');
+      const m=String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+      showToast(`⏳ Cooldown: espera ${h}h ${m}m para abrir otro sobre ${def.label}`);
+      return;
+    }
+  }
+  document.getElementById('packOpenTitle').textContent=`SOBRE ${def.label.toUpperCase()}`;
+  document.getElementById('bigPack').style.background=def.bg;
+  document.getElementById('bigPack').style.border=`2px solid ${def.border}`;
+  document.getElementById('bigPackEmoji').textContent=def.icon;
+  document.getElementById('packOpenStage').style.display='block';
+  document.getElementById('cardsResult').className='cards-result';
+  document.getElementById('packModalActions').style.display='none';
+  document.getElementById('packModal').classList.add('show');
+}
+
+function closePackModal(){
+  document.getElementById('packModal').classList.remove('show');
+}
+
+function reOpenPack(){
+  openPackModal(currentPackId);
+}
+
+function revealPackCards(){
+  if(!currentPackId||!currentUser)return;
+  const def=packDefs.find(p=>p.id===currentPackId);
+  if(!def)return;
+
+  // Deduct coins / consume bonus
+  const bonusKeyR='bonusPacks_'+def.id;
+  if((currentUser[bonusKeyR]||0)>0){
+    currentUser[bonusKeyR]--;
+    showToast('📦 Sobre del inventario usado · Quedan: '+(currentUser[bonusKeyR]));
+  } else if(!def.free&&!def.freeDaily){
+    if(currentUser.coins<def.price){showToast('⚠️ Monedas insuficientes');closePackModal();return;}
+    currentUser.coins-=def.price;
+    currentUser['lastPack_'+def.id]=Date.now();
+  } else if(def.freeDaily){
+    const lastKey='lastFreeDaily_'+def.id;
+    const last=currentUser[lastKey]||0;
+    if(Date.now()-last<86400000){
+      // paying with coins
+      if(currentUser.coins<def.price){showToast('⚠️ Monedas insuficientes');closePackModal();return;}
+      currentUser.coins-=def.price;
+    } else {
+      currentUser[lastKey]=Date.now();
+    }
+  }
+  currentUser.packs=(currentUser.packs||0)+1;
+
+  const allCards=DB.get('hmx_cards')||[];
+  const myCards=currentUser.cards||[];
+  const myDupes=currentUser.dupes||[];
+
+  // Pick cards by rarity
+  const picked=def.rarities.map(r=>{
+    const pool=allCards.filter(c=>c.rarity===r);
+    if(!pool.length){const fb=allCards.filter(c=>c.rarity==='common');return fb[Math.floor(Math.random()*fb.length)]||allCards[0];}
+    return pool[Math.floor(Math.random()*pool.length)];
+  }).filter(Boolean);
+
+  // Add to collection
+  let newCards=[];
+  picked.forEach(c=>{
+    if(!myCards.includes(c.id)){myCards.push(c.id);newCards.push(c.id);}
+    else myDupes.push(c.id);
+  });
+  currentUser.cards=myCards;
+  currentUser.dupes=myDupes;
+  currentUser.coins+= picked.length*10; // 10 coins per card as bonus
+  currentUser.xp=(currentUser.xp||0)+picked.length*20;
+  currentUser.level=Math.floor(currentUser.xp/500)+1;
+
+  // History
+  if(!currentUser.packHistory)currentUser.packHistory=[];
+  currentUser.packHistory.push({
+    icon:def.icon,pack:def.label,date:Date.now(),
+    cards:picked.map(c=>rarityData[c.rarity].icon+' '+c.name).join(', ')
+  });
+  saveUser();updateNavCoins();
+
+  // Animate
+  document.getElementById('packOpenStage').style.display='none';
+  const result=document.getElementById('cardsResult');
+  result.innerHTML=picked.map((c,i)=>{
+    const isNew=newCards.includes(c.id);
+    return `<div class="card-reveal-wrap" id="crw${i}" style="position:relative">
+      ${buildHaxCard(c,100)}
+      <div class="card-badge ${isNew?'badge-new':'badge-dupe'}">${isNew?'¡NUEVA!':'REPETIDA'}</div>
+    </div>`;
+  }).join('');
+  result.classList.add('show');
+  picked.forEach((_,i)=>setTimeout(()=>{const el=document.getElementById('crw'+i);if(el)el.classList.add('in');},i*180+100));
+  setTimeout(()=>document.getElementById('packModalActions').style.display='flex',picked.length*180+400);
+}
+
+// ═══════════════════════════════════
+// ALBUM
+// ═══════════════════════════════════
+let albumCurrentRarity='america';
+let albumCurrentPage=0;
+let albumPlacingCard=null; // card id being dragged/placed
+
+function renderAlbum(){
+  if(!currentUser)return;
+  const allCards=DB.get('hmx_cards')||[];
+  const myCards=currentUser.cards||[];
+  const myDupes=currentUser.dupes||[];
+  const placed=currentUser.albumPlaced||{}; // {slotKey: cardId}
+
+  // Progress
+  const pct=allCards.length?Math.round(myCards.length/allCards.length*100):0;
+  document.getElementById('albumPct').textContent=pct+'%';
+  document.getElementById('albumProgressFill').style.width=pct+'%';
+  const rarityOrder=['america','legend','campeones','epic','gold','silver','common'];
+  document.getElementById('albumDetail').innerHTML=rarityOrder.map(r=>{
+    const t=allCards.filter(c=>c.rarity===r).length;
+    const o=myCards.filter(id=>{const c=allCards.find(x=>x.id===id);return c&&c.rarity===r;}).length;
+    return `<span>${rarityData[r].icon} ${rarityData[r].label}: ${o}/${t}</span>`;
+  }).join('');
+
+  // Rarity tabs
+  const tabsEl=document.getElementById('albumRarityTabs');
+  const tabRarityOrder=['america','legend','campeones','epic','gold','silver','common'];
+  tabsEl.innerHTML=tabRarityOrder.map(r=>{
+    const t=allCards.filter(c=>c.rarity===r).length;
+    const o=myCards.filter(id=>{const c=allCards.find(x=>x.id===id);return c&&c.rarity===r;}).length;
+    const isAmerica=r==='america';
+    const isCamp=r==='campeones';
+    return `<button onclick="switchAlbumRarity('${r}')" id="artab-${r}" class="btn btn-ghost btn-sm ${albumCurrentRarity===r?'active':''}" style="${albumCurrentRarity===r?'border-color:'+rarityData[r].color+';color:'+rarityData[r].color+';':''};${isAmerica?'background:linear-gradient(135deg,rgba(0,26,58,.7),rgba(14,165,233,.15));border-color:#0ea5e9;color:#38bdf8;font-weight:800;':''};${isCamp?'background:rgba(56,189,248,.08);border-color:#38bdf8;':''}">
+      ${rarityData[r].icon} ${rarityData[r].label} <span style="font-size:.68rem;opacity:.7">${o}/${t}</span>
+    </button>`;
+  }).join('');
+
+  renderAlbumPages();
+}
+
+function switchAlbumRarity(r){
+  albumCurrentRarity=r;
+  albumCurrentPage=0;
+  renderAlbum();
+}
+
+function renderAlbumPages(){
+  if(!currentUser)return;
+  const allCards=DB.get('hmx_cards')||[];
+  const myCards=currentUser.cards||[];
+  const myDupes=currentUser.dupes||[];
+  const placed=currentUser.albumPlaced||{};
+
+  // Cards of this rarity sorted by rating desc
+  const rarityOrder=['america','legend','campeones','epic','gold','silver','common'];
+  const allRarityCards=allCards.filter(c=>c.rarity===albumCurrentRarity).sort((a,b)=>b.rating-a.rating);
+  // Assign sequential numbers within rarity
+  const rarityOffset=rarityOrder.slice(0,rarityOrder.indexOf(albumCurrentRarity)).reduce((acc,r)=>acc+allCards.filter(c=>c.rarity===r).length,0);
+
+  const PER_PAGE=8;
+  const totalPages=Math.ceil(allRarityCards.length/PER_PAGE)||1;
+  if(albumCurrentPage>=totalPages)albumCurrentPage=totalPages-1;
+  const pageCards=allRarityCards.slice(albumCurrentPage*PER_PAGE,(albumCurrentPage+1)*PER_PAGE);
+
+  // Unplaced cards in hand (owned but not placed in this rarity)
+  const placedInRarity=Object.entries(placed).filter(([k,v])=>{
+    return allRarityCards.some(c=>c.id===v);
+  }).map(([k,v])=>v);
+  const handCards=myCards.filter(id=>{
+    const c=allCards.find(x=>x.id===id);
+    return c&&c.rarity===albumCurrentRarity&&!placedInRarity.includes(id);
+  });
+
+  const book=document.getElementById('albumBook');
+  const rows=[pageCards.slice(0,4),pageCards.slice(4,8)];
+
+  const rd=rarityData[albumCurrentRarity];
+  const isAmericaCat=albumCurrentRarity==='america';
+  book.innerHTML=`<div class="album-page" style="min-width:100%;border-right:none;${isAmericaCat?'background:linear-gradient(160deg,rgba(0,26,58,.4),var(--bg3));border:1px solid rgba(14,165,233,.2);border-radius:12px;':''}">
+    <div class="album-page-header">
+      <div class="album-page-title" style="color:${rd.color};${isAmericaCat?'font-size:1.3rem;text-shadow:0 0 20px rgba(14,165,233,.5);':''}">${rd.icon} ${rd.label.toUpperCase()} — HMX 2025</div>
+      <div style="display:flex;align-items:center;gap:.8rem">
+        <button class="btn btn-ghost btn-sm" onclick="albumPage(-1)" ${albumCurrentPage===0?'disabled':''} style="padding:4px 10px">◀</button>
+        <div class="album-page-num">Pág. ${albumCurrentPage+1} / ${totalPages}</div>
+        <button class="btn btn-ghost btn-sm" onclick="albumPage(1)" ${albumCurrentPage>=totalPages-1?'disabled':''} style="padding:4px 10px">▶</button>
+      </div>
+    </div>
+    ${rows.map(row=>`<div class="album-row">
+      ${row.map((c,idx)=>{
+        const globalNum=rarityOffset+allRarityCards.indexOf(c)+1;
+        const slotKey=`${albumCurrentRarity}_${c.id}`;
+        const placedCardId=placed[slotKey];
+        const placedCard=placedCardId?allCards.find(x=>x.id===placedCardId):null;
+        const dupeCount=myDupes.filter(x=>x===placedCardId).length;
+        const owned=myCards.includes(c.id);
+        if(placedCard){
+          return `<div class="album-slot filled" style="position:relative" onclick="openCardPreview('${placedCard.id}','${slotKey}')" title="Ver carta">
+            ${buildHaxCard(placedCard,88)}
+            ${dupeCount>0?`<div class="dupe-badge">+${dupeCount}</div>`:''}
+          </div>`;
+        } else {
+          const canPlace=owned&&albumPlacingCard;
+          return `<div class="album-slot empty ${canPlace?'slot-droppable':''}" onclick="placeCardInSlot('${slotKey}','${c.id}')" style="${canPlace?'border-color:var(--blue);background:rgba(59,130,246,.08)':''}">
+            <div class="slot-num">#${globalNum}</div>
+            <div style="font-size:.55rem;color:var(--text3);margin-top:2px;text-align:center;padding:0 4px">${c.name}</div>
+            ${owned?'<div style="font-size:.6rem;color:var(--green);margin-top:2px">✓</div>':''}
+          </div>`;
+        }
+      }).join('')}
+      ${Array(Math.max(0,4-row.length)).fill(0).map(()=>`<div class="album-slot empty"><div class="slot-num">—</div></div>`).join('')}
+    </div>`).join('')}
+  </div>`;
+
+  // Hand panel
+  const handEl=document.getElementById('albumHand');
+  if(handEl){
+    if(!handCards.length){
+      handEl.innerHTML=`<div style="color:var(--text3);font-size:.82rem;text-align:center;padding:.8rem">Sin cartas ${rd.label} por colocar</div>`;
+    } else {
+      handEl.innerHTML=`<div style="font-size:.72rem;color:var(--text2);margin-bottom:.6rem">Toca una carta para seleccionarla, luego toca el hueco del álbum</div>`
+        +handCards.map(id=>{
+          const c=allCards.find(x=>x.id===id);
+          if(!c)return '';
+          const isSelecting=albumPlacingCard===id;
+          return `<div onclick="openCardPreview('${id}',null)" style="display:inline-block;margin:3px;border-radius:10px;outline:${isSelecting?'3px solid var(--blue)':'3px solid transparent'};cursor:pointer;transition:outline .15s">${buildHaxCard(c,72)}</div>`;
+        }).join('');
+    }
+  }
+}
+
+function albumPage(dir){albumCurrentPage+=dir;renderAlbumPages();}
+
+function selectCardToPlace(cardId){
+  albumPlacingCard=(albumPlacingCard===cardId)?null:cardId;
+  renderAlbumPages();
+}
+
+function placeCardInSlot(slotKey,expectedCardId){
+  if(!albumPlacingCard){showToast('👆 Primero selecciona una carta de tu mano');return;}
+  if(!currentUser.albumPlaced)currentUser.albumPlaced={};
+  // Only place if the placing card matches the slot's card (same id)
+  if(albumPlacingCard!==expectedCardId){
+    showToast('⚠️ Esa carta no corresponde a este espacio');return;
+  }
+  currentUser.albumPlaced[slotKey]=albumPlacingCard;
+  albumPlacingCard=null;
+  saveUser();renderAlbumPages();
+  showToast('✅ Carta colocada en el álbum');
+}
+
+function unplaceCard(slotKey,cardId){
+  if(!currentUser.albumPlaced)return;
+  delete currentUser.albumPlaced[slotKey];
+  saveUser();renderAlbumPages();
+  showToast('↩️ Carta retirada del álbum');
+}
+
+// ═══════════════════════════════════
+// TRADE (desactivado)
+// ═══════════════════════════════════
+function renderTrade(){ /* mantenimiento */ }
+
+// ═══════════════════════════════════
+// REDEEM
+// ═══════════════════════════════════
+function renderRedeem(){
+  if(!currentUser)return;
+  const hist=currentUser.redeemHistory||[];
+  const el=document.getElementById('redeemHistory');
+  if(!el)return;
+  if(!hist.length){el.innerHTML='Sin canjes aún';return;}
+  el.innerHTML=hist.slice().reverse().slice(0,5).map(h=>`
+    <div style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--border)">
+      <span>${h.desc}</span>
+      <span style="color:var(--text3)">${timeAgo(h.date)}</span>
+    </div>`).join('');
+  // Show pack inventory
+  const invEl=document.getElementById('redeemPackInv');
+  if(invEl){
+    const invItems=packDefs.map(p=>{
+      const cnt=currentUser['bonusPacks_'+p.id]||0;
+      if(!cnt)return '';
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--border)">
+        <span>${p.icon} Sobre ${p.label}</span>
+        <div style="display:flex;align-items:center;gap:.6rem">
+          <span style="font-family:'Space Mono';color:var(--blue);font-weight:700">x${cnt}</span>
+          <button class="btn btn-primary btn-sm" onclick="showPage('packs')">Usar</button>
+        </div>
+      </div>`;
+    }).filter(Boolean).join('');
+    invEl.innerHTML=invItems||'<div style="color:var(--text3);font-size:.8rem">Sin sobres en inventario</div>';
+  }
+}
+
+function redeemCode(){
+  const code=(document.getElementById('redeemInput').value||'').trim().toUpperCase();
+  const msgEl=document.getElementById('redeemMsg');
+  if(!code){msgEl.style.color='var(--red)';msgEl.textContent='⚠️ Escribe un código';return;}
+
+  const codes=DB.get('hmx_codes')||[];
+  const found=codes.find(c=>c.key===code);
+  if(!found){msgEl.style.color='var(--red)';msgEl.textContent='❌ Código inválido o expirado';return;}
+
+  // Check uses
+  if(!found.usedBy)found.usedBy=[];
+  if(found.usedBy.includes(currentUser.username)){msgEl.style.color='var(--red)';msgEl.textContent='⚠️ Ya canjeaste este código';return;}
+  if(found.maxUses>0&&found.usedBy.length>=found.maxUses){msgEl.style.color='var(--red)';msgEl.textContent='❌ Este código ya alcanzó su límite de usos';return;}
+
+  // Apply reward
+  let desc='';
+  if(found.type==='coins'){
+    currentUser.coins=(currentUser.coins||0)+found.coins;
+    desc=`🪙 +${found.coins.toLocaleString()} monedas`;
+  } else if(found.type==='pack'){
+    // Give packs as bonus openings: add to inventory counter for that pack type
+    const key='bonusPacks_'+found.packType;
+    currentUser[key]=(currentUser[key]||0)+found.qty;
+    const packDef=packDefs.find(p=>p.id===found.packType);
+    desc=`⬜ x${found.qty} sobre${found.qty>1?'s':''} ${packDef?packDef.label:found.packType}`;
+  }
+
+  found.usedBy.push(currentUser.username);
+  DB.set('hmx_codes',codes);
+
+  if(!currentUser.redeemHistory)currentUser.redeemHistory=[];
+  currentUser.redeemHistory.push({code,desc,date:Date.now()});
+  saveUser();updateNavCoins();
+
+  msgEl.style.color='var(--green)';
+  msgEl.textContent='✅ '+desc+' añadidos a tu cuenta';
+  document.getElementById('redeemInput').value='';
+  renderRedeem();
+  showToast('🎁 '+desc);
+}
+
+// ═══════════════════════════════════
+// RANKING
+// ═══════════════════════════════════
+function renderRanking(){
+  const users=DB.get('hmx_users')||[];
+  const sorted=[...users].filter(u=>!u.isAdmin).sort((a,b)=>(b.cards||[]).length-(a.cards||[]).length);
+  const allCards=DB.get('hmx_cards')||[];
+  const body=document.getElementById('rankingBody');
+  body.innerHTML=sorted.map((u,i)=>{
+    const isMe=currentUser&&u.username===currentUser.username;
+    const color=stringToColor(u.username);
+    const pts=((u.cards||[]).length*50+(u.packs||0)*10).toLocaleString();
+    return `<div class="rank-row ${isMe?'me':''}">
+      <span class="rank-pos ${i===0?'r1':i===1?'r2':i===2?'r3':''}">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</span>
+      <div class="rank-user">
+        <div class="rank-av" style="background:${color}">${u.username.substring(0,2).toUpperCase()}</div>
+        <div>
+          <div class="rank-nm">${u.username}${isMe?' <span style="font-size:.65rem;background:var(--blue);color:white;padding:1px 6px;border-radius:4px">TÚ</span>':''}</div>
+          <div class="rank-lv">Niv. ${u.level||1}</div>
+        </div>
+      </div>
+      <div class="rank-val">${(u.cards||[]).length}</div>
+      <div class="rank-val">${u.packs||0}</div>
+      <div class="rank-val" style="color:var(--gold)">${pts}</div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════
+// PROFILE
+// ═══════════════════════════════════
+function renderProfile(){
+  if(!currentUser)return;
+  const color=stringToColor(currentUser.username);
+  const initials=currentUser.username.substring(0,2).toUpperCase();
+  document.getElementById('profAvatar').textContent=initials;
+  document.getElementById('profAvatar').style.background=color;
+  document.getElementById('profName').textContent=currentUser.username;
+  document.getElementById('profSub').textContent=`⚽ HaxBall México · Miembro desde ${new Date(currentUser.joinDate||Date.now()).toLocaleDateString('es-MX',{month:'long',year:'numeric'})}`;
+  const levelNames=['','Rookie','Aprendiz','Coleccionista','Experto','Veterano','Élite','Maestro','Gran Maestro','Leyenda','Inmortal'];
+  const level=Math.min(currentUser.level||1,10);
+  document.getElementById('profLevel').textContent=`⭐ Nivel ${level} — ${levelNames[level]||''}`;
+  const xpNext=level*500;
+  const xpCurr=currentUser.xp%500;
+  document.getElementById('profXpText').textContent=`XP: ${currentUser.xp||0} / ${xpNext}`;
+  document.getElementById('profXpFill').style.width=(xpCurr/500*100)+'%';
+
+  const allCards=DB.get('hmx_cards')||[];
+  const myCards=currentUser.cards||[];
+  const myDupes=currentUser.dupes||[];
+  const users=DB.get('hmx_users')||[];
+  const sorted=[...users].filter(u=>!u.isAdmin).sort((a,b)=>(b.cards||[]).length-(a.cards||[]).length);
+  const myRank=currentUser.isAdmin?0:sorted.findIndex(u=>u.username===currentUser.username)+1;
+
+  const stats=[
+    {label:'Álbum',val:allCards.length?Math.round(myCards.length/allCards.length*100)+'%':'0%',color:'var(--blue)'},
+    {label:'Cartas',val:myCards.length},
+    {label:'Leyendas',val:myCards.filter(id=>{const c=allCards.find(x=>x.id===id);return c&&c.rarity==='legend';}).length,color:'var(--legend)'},
+    {label:'Épicas',val:myCards.filter(id=>{const c=allCards.find(x=>x.id===id);return c&&c.rarity==='epic';}).length,color:'var(--epic)'},
+    {label:'Sobres',val:currentUser.packs||0},
+    {label:'Repetidas',val:myDupes.length,color:'var(--red)'},
+    {label:'Ranking',val:'#'+myRank,color:'var(--blue)'},
+    {label:'Monedas',val:(currentUser.coins||0).toLocaleString(),color:'var(--gold)'},
+  ];
+  document.getElementById('profileStats').innerHTML=stats.map(s=>`
+    <div class="card-surface stat-box"><div class="label">${s.label}</div><div class="val" style="${s.color?'color:'+s.color:''}">${s.val}</div></div>`).join('');
+
+  // Achievements
+  const achs=[
+    {icon:'⬜',name:'Primer Sobre',desc:'Abre tu primer sobre',done:(currentUser.packs||0)>=1},
+    {icon:'📖',name:'Coleccionista',desc:'25% del álbum',done:allCards.length&&myCards.length/allCards.length>=0.25},
+    {icon:'🔄',name:'Mercader',desc:'5 trades completados',done:(currentUser.trades||[]).filter(t=>t.status==='ok').length>=5},
+    {icon:'🥇',name:'Primera Joya',desc:'Obtén una carta Oro',done:myCards.some(id=>{const c=allCards.find(x=>x.id===id);return c&&c.rarity==='gold';})},
+    {icon:'💜',name:'Brillo Épico',desc:'5 cartas Épicas',done:myCards.filter(id=>{const c=allCards.find(x=>x.id===id);return c&&c.rarity==='epic';}).length>=5},
+    {icon:'🔱',name:'Leyenda Viva',desc:'Primera carta Leyenda',done:myCards.some(id=>{const c=allCards.find(x=>x.id===id);return c&&c.rarity==='legend';})},
+    {icon:'💯',name:'Álbum Completo',desc:'Completa el álbum',done:allCards.length&&myCards.length>=allCards.length},
+    {icon:'👑',name:'Rey del Trade',desc:'25 trades completados',done:(currentUser.trades||[]).filter(t=>t.status==='ok').length>=25},
+  ];
+  document.getElementById('profileAch').innerHTML=achs.map(a=>`
+    <div class="ach-item ${a.done?'':'locked'}">
+      <div class="ach-icon">${a.icon}</div>
+      <div><div class="ach-name">${a.name}</div><div class="ach-desc">${a.desc}</div></div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════
+// ADMIN
+// ═══════════════════════════════════
+function switchAdminTab(tab){
+  document.querySelectorAll('.admin-tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('active'));
+  document.querySelector(`.admin-tab-btn[onclick*="${tab}"]`).classList.add('active');
+  const sec=document.getElementById('adminSection-'+tab);
+  if(sec)sec.classList.add('active');
+}
+
+function renderAdmin(){
+  if(!currentUser||!currentUser.isAdmin){showPage('home');return;}
+  renderAdminCards();
+  renderAdminUsers();
+  renderAdminNews();
+  renderAdminCodes();
+  populateRewardSelects();
+  loadDesignConfigToForm();
+}
+
+function renderAdminCards(){
+  const rarityOrder=['america','legend','campeones','epic','gold','silver','common'];
+  const cards=(DB.get('hmx_cards')||[]).slice().sort((a,b)=>{
+    const ri=rarityOrder.indexOf(a.rarity)-rarityOrder.indexOf(b.rarity);
+    return ri!==0?ri:b.rating-a.rating;
+  });
+  document.getElementById('adminCardCount').textContent=cards.length;
+  const list=document.getElementById('adminCardList');
+  list.innerHTML=cards.map(c=>{
+    const rd=rarityData[c.rarity]||rarityData.common;
+    const label=c.initials||(c.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase());
+    return `<div class="admin-card-item">
+      <div class="admin-card-preview hax-card ${rd.class.split(' ')[0]}" style="display:flex;flex-direction:column;overflow:hidden">
+        <div style="padding:3px 4px;font-family:'Bebas Neue';font-size:.9rem">${c.rating}</div>
+        <div class="hax-circle ${rd.class.split(' ')[1]}" style="width:30px;height:30px;margin:0 auto;font-size:.55rem;font-family:'Bebas Neue'">${label}</div>
+        <div style="padding:3px 4px;font-size:.45rem;font-weight:700;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.name}</div>
+      </div>
+      <div class="info">
+        <div class="name">${c.name}</div>
+        <div class="meta">${c.pos} · ${c.team} · ${rd.icon} ${rd.label} · Rating: ${c.rating}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px">
+        <button class="btn btn-ghost btn-sm" onclick="editCard('${c.id}')">✏️ Editar</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteCard('${c.id}')">🗑️ Eliminar</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderAdminUsers(){
+  const users=DB.get('hmx_users')||[];
+  const list=document.getElementById('adminUserList');
+  list.innerHTML=`<table style="width:100%;border-collapse:collapse;font-size:.82rem">
+    <thead><tr style="color:var(--text3);font-size:.7rem;text-transform:uppercase;letter-spacing:.8px">
+      <th style="text-align:left;padding:.5rem">Usuario</th>
+      <th style="text-align:center;padding:.5rem">Cartas</th>
+      <th style="text-align:center;padding:.5rem">Monedas</th>
+      <th style="text-align:center;padding:.5rem">Sobres</th>
+      <th style="text-align:center;padding:.5rem">Rol</th>
+    </tr></thead>
+    <tbody>${users.map(u=>`<tr style="border-top:1px solid var(--border)">
+      <td style="padding:.6rem">${u.username}</td>
+      <td style="text-align:center;padding:.6rem">${(u.cards||[]).length}</td>
+      <td style="text-align:center;padding:.6rem">${(u.coins||0).toLocaleString()}</td>
+      <td style="text-align:center;padding:.6rem">${u.packs||0}</td>
+      <td style="text-align:center;padding:.6rem">${u.isAdmin?'<span style="color:var(--blue);font-weight:700">Admin</span>':'Usuario'}</td>
+    </tr>`).join('')}</tbody>
+  </table>`;
+}
+
+function saveCard(){
+  const name=document.getElementById('cardName').value.trim();
+  const rating=parseInt(document.getElementById('cardRating').value);
+  const team=document.getElementById('cardTeam').value.trim();
+  const pos=document.getElementById('cardPos').value;
+  const rarity=document.getElementById('cardRarity').value;
+  const color=document.getElementById('cardColor').value.trim();
+  const initials=(document.getElementById('cardInitials').value||'').toUpperCase().substring(0,2);
+  const editId=document.getElementById('editingCardId').value;
+
+  if(!name||!team||!rating){showToast('⚠️ Completa los campos obligatorios');return;}
+  if(rating<1||rating>99){showToast('⚠️ El rating debe ser entre 1 y 99');return;}
+
+  const cards=DB.get('hmx_cards')||[];
+  if(editId){
+    const idx=cards.findIndex(c=>c.id===editId);
+    if(idx>=0)cards[idx]={...cards[idx],name,rating,team,pos,rarity,color,initials};
+  } else {
+    const id='c'+Date.now();
+    cards.push({id,name,rating,team,pos,rarity,color,initials});
+  }
+  DB.set('hmx_cards',cards);
+  showToast('✅ Carta guardada');
+  cancelEditCard();
+  renderAdminCards();
+}
+
+function editCard(id){
+  const cards=DB.get('hmx_cards')||[];
+  const c=cards.find(x=>x.id===id);
+  if(!c)return;
+  document.getElementById('editingCardId').value=id;
+  document.getElementById('cardName').value=c.name;
+  document.getElementById('cardRating').value=c.rating;
+  document.getElementById('cardTeam').value=c.team;
+  document.getElementById('cardPos').value=c.pos;
+  document.getElementById('cardRarity').value=c.rarity;
+  document.getElementById('cardColor').value=c.color||'#3b82f6';
+  document.getElementById('cardInitials').value=c.initials||'';
+  document.getElementById('adminFormTitle').textContent='✏️ Editar Carta: '+c.name;
+  document.getElementById('adminSaveBtn').textContent='💾 Actualizar carta';
+  document.getElementById('adminCancelBtn').style.display='inline-flex';
+  document.getElementById('adminFormTitle').scrollIntoView({behavior:'smooth'});
+}
+
+function cancelEditCard(){
+  document.getElementById('editingCardId').value='';
+  document.getElementById('cardName').value='';
+  document.getElementById('cardRating').value='';
+  document.getElementById('cardTeam').value='';
+  document.getElementById('cardPos').value='DEL';
+  document.getElementById('cardRarity').value='common';
+  document.getElementById('cardColor').value='#3b82f6';
+  document.getElementById('cardInitials').value='';
+  document.getElementById('adminFormTitle').textContent='➕ Añadir Carta';
+  document.getElementById('adminSaveBtn').textContent='💾 Guardar carta';
+  document.getElementById('adminCancelBtn').style.display='none';
+}
+
+function deleteCard(id){
+  if(!confirm('¿Eliminar esta carta?'))return;
+  const cards=DB.get('hmx_cards')||[];
+  DB.set('hmx_cards',cards.filter(c=>c.id!==id));
+  renderAdminCards();
+  showToast('🗑️ Carta eliminada');
+}
+
+// ═══════════════════════════════════
+// ADMIN — NEWS
+// ═══════════════════════════════════
+function renderAdminNews(){
+  const news=(DB.get('hmx_news')||[]).slice().reverse();
+  const list=document.getElementById('adminNewsList');
+  if(!list)return;
+  if(!news.length){list.innerHTML='<div style="color:var(--text3);font-size:.82rem">Sin noticias</div>';return;}
+  list.innerHTML=news.map(n=>`
+    <div style="display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.6rem .8rem">
+      <span style="font-size:1.2rem">${n.emoji||'📢'}</span>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${n.title}</div>
+        <div style="font-size:.68rem;color:var(--blue)">${n.tag}</div>
+      </div>
+      <div style="display:flex;gap:4px;flex-shrink:0">
+        <button class="btn btn-ghost btn-sm" onclick="editNews('${n.id}')">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteNews('${n.id}')">🗑️</button>
+      </div>
+    </div>`).join('');
+}
+
+function saveNews(){
+  const title=document.getElementById('newsTitle').value.trim();
+  const tag=document.getElementById('newsTag').value.trim()||'Anuncio';
+  const emoji=document.getElementById('newsEmoji').value.trim()||'📢';
+  const bg=document.getElementById('newsBg').value.trim()||'linear-gradient(135deg,#0f2040,#1a3a6a)';
+  const editId=document.getElementById('editingNewsId').value;
+  if(!title){showToast('⚠️ Escribe un título');return;}
+  const news=DB.get('hmx_news')||[];
+  if(editId){
+    const idx=news.findIndex(n=>n.id===editId);
+    if(idx>=0)news[idx]={...news[idx],title,tag,emoji,bg};
+  } else {
+    news.push({id:'n'+Date.now(),title,tag,emoji,bg,date:Date.now()});
+  }
+  DB.set('hmx_news',news);
+  showToast('✅ Noticia publicada');
+  cancelEditNews();
+  renderAdminNews();
+}
+
+function editNews(id){
+  const news=DB.get('hmx_news')||[];
+  const n=news.find(x=>x.id===id);
+  if(!n)return;
+  document.getElementById('editingNewsId').value=id;
+  document.getElementById('newsTitle').value=n.title;
+  document.getElementById('newsTag').value=n.tag;
+  document.getElementById('newsEmoji').value=n.emoji||'📢';
+  document.getElementById('newsBg').value=n.bg||'';
+  document.getElementById('newsFormTitle').textContent='✏️ Editar Noticia';
+  document.getElementById('newsSaveBtn').textContent='💾 Actualizar';
+  document.getElementById('newsCancelBtn').style.display='inline-flex';
+}
+
+function cancelEditNews(){
+  document.getElementById('editingNewsId').value='';
+  document.getElementById('newsTitle').value='';
+  document.getElementById('newsTag').value='';
+  document.getElementById('newsEmoji').value='';
+  document.getElementById('newsBg').value='';
+  document.getElementById('newsFormTitle').textContent='📢 Crear Noticia';
+  document.getElementById('newsSaveBtn').textContent='💾 Publicar';
+  document.getElementById('newsCancelBtn').style.display='none';
+}
+
+function deleteNews(id){
+  if(!confirm('¿Eliminar esta noticia?'))return;
+  DB.set('hmx_news',(DB.get('hmx_news')||[]).filter(n=>n.id!==id));
+  renderAdminNews();
+  showToast('🗑️ Noticia eliminada');
+}
+
+// ═══════════════════════════════════
+// ADMIN — CODES
+// ═══════════════════════════════════
+function toggleCodeFields(){
+  const t=document.getElementById('codeType').value;
+  document.getElementById('codeCoinsField').style.display=t==='coins'?'':'none';
+  document.getElementById('codePackField').style.display=t==='pack'?'':'none';
+}
+
+function renderAdminCodes(){
+  const codes=DB.get('hmx_codes')||[];
+  const list=document.getElementById('adminCodeList');
+  if(!list)return;
+  if(!codes.length){list.innerHTML='<div style="color:var(--text3);font-size:.82rem">Sin códigos creados</div>';return;}
+  list.innerHTML=codes.map(c=>`
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.7rem .9rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem">
+        <span style="font-family:'Space Mono';font-size:.78rem;color:var(--gold);letter-spacing:1px">${c.key}</span>
+        <button class="btn btn-danger btn-sm" onclick="deleteCode('${c.key}')">🗑️</button>
+      </div>
+      <div style="font-size:.72rem;color:var(--text2);margin-top:4px">
+        ${c.type==='coins'?'🪙 '+c.coins.toLocaleString()+' monedas':'⬜ x'+c.qty+' sobre '+c.packType}
+        · Usos: ${(c.usedBy||[]).length}/${c.maxUses||'∞'}
+      </div>
+    </div>`).join('');
+}
+
+function saveCode(){
+  const key=(document.getElementById('codeKey').value||'').trim().toUpperCase().replace(/\s/g,'');
+  const type=document.getElementById('codeType').value;
+  const maxUses=parseInt(document.getElementById('codeMaxUses').value)||0;
+  if(!key){showToast('⚠️ Escribe un código');return;}
+  const codes=DB.get('hmx_codes')||[];
+  if(codes.find(c=>c.key===key)){showToast('⚠️ Ese código ya existe');return;}
+  const newCode={key,type,maxUses,usedBy:[],createdAt:Date.now()};
+  if(type==='coins'){
+    const coins=parseInt(document.getElementById('codeCoins').value)||0;
+    if(!coins){showToast('⚠️ Escribe la cantidad de monedas');return;}
+    newCode.coins=coins;
+  } else {
+    const packType=document.getElementById('codePackType').value;
+    const qty=parseInt(document.getElementById('codePackQty').value)||1;
+    newCode.packType=packType;newCode.qty=qty;
+  }
+  codes.push(newCode);
+  DB.set('hmx_codes',codes);
+  document.getElementById('codeKey').value='';
+  document.getElementById('codeCoins').value='';
+  document.getElementById('codeMaxUses').value='';
+  showToast('✅ Código creado: '+key);
+  renderAdminCodes();
+}
+
+function deleteCode(key){
+  if(!confirm('¿Eliminar el código '+key+'?'))return;
+  DB.set('hmx_codes',(DB.get('hmx_codes')||[]).filter(c=>c.key!==key));
+  renderAdminCodes();
+  showToast('🗑️ Código eliminado');
+}
+
+// ═══════════════════════════════════
+// CARD PREVIEW
+// ═══════════════════════════════════
+let previewCardId=null;
+let previewSlotKey=null;
+
+function openCardPreview(cardId, slotKey){
+  const allCards=DB.get('hmx_cards')||[];
+  const card=allCards.find(c=>c.id===cardId);
+  if(!card)return;
+  previewCardId=cardId;
+  previewSlotKey=slotKey||null;
+  const contentEl=document.getElementById('cardPreviewContent');
+  const actionsEl=document.getElementById('cardPreviewActions');
+  const rd=rarityData[card.rarity]||rarityData.common;
+  contentEl.innerHTML=`
+    <div style="font-family:'Bebas Neue';font-size:1.3rem;letter-spacing:2px;color:${rd.color}">${rd.icon} ${rd.label.toUpperCase()}</div>
+    <div class="card-preview-large">${buildHaxCard(card,140)}</div>
+    <div style="font-size:.8rem;color:var(--text2)">Rating: <strong>${card.rating}</strong> · ${card.pos} · ${card.team}</div>`;
+  // Build action buttons
+  let actions='<button class="btn btn-ghost" onclick="closeCardPreviewModal()">✕ Cerrar</button>';
+  if(slotKey){
+    // card is placed in album
+    actions+=`<button class="btn btn-danger" onclick="unplaceCardFromPreview()">↩️ Quitar del álbum</button>`;
+  } else {
+    // card in hand, offer to select for placement
+    actions+=`<button class="btn btn-primary" onclick="selectFromPreview()">📌 Colocar en álbum</button>`;
+  }
+  actionsEl.innerHTML=actions;
+  document.getElementById('cardPreviewModal').classList.add('show');
+}
+
+function closeCardPreviewModal(){
+  document.getElementById('cardPreviewModal').classList.remove('show');
+  previewCardId=null;previewSlotKey=null;
+}
+
+function closeCardPreview(e){
+  if(e.target===document.getElementById('cardPreviewModal')) closeCardPreviewModal();
+}
+
+function unplaceCardFromPreview(){
+  if(previewSlotKey)unplaceCard(previewSlotKey,previewCardId);
+  closeCardPreviewModal();
+}
+
+function selectFromPreview(){
+  selectCardToPlace(previewCardId);
+  closeCardPreviewModal();
+  showToast('📌 Carta seleccionada — toca un hueco del álbum');
+}
+
+// ═══════════════════════════════════
+// UTILS
+// ═══════════════════════════════════
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+function timeAgo(ts){
+  const diff=(Date.now()-ts)/1000;
+  if(diff<60)return 'Ahora mismo';
+  if(diff<3600)return `Hace ${Math.floor(diff/60)} min`;
+  if(diff<86400)return `Hace ${Math.floor(diff/3600)} h`;
+  return `Hace ${Math.floor(diff/86400)} días`;
+}
+
+// ═══════════════════════════════════
+// INIT
+// ═══════════════════════════════════
+// ═══════════════════════════════════
+// DESIGN CONFIG
+// ═══════════════════════════════════
+function applyDesignConfig(){
+  const cfg=DB.get('hmx_design_config')||{};
+  window._designCfg=cfg;
+  if(cfg.colorBlue){document.documentElement.style.setProperty('--blue',cfg.colorBlue);}
+  if(cfg.colorBg){document.documentElement.style.setProperty('--bg',cfg.colorBg);}
+  if(cfg.discordUrl){
+    document.querySelectorAll('.nav-discord').forEach(el=>el.onclick=()=>window.open(cfg.discordUrl,'_blank'));
+  }
+  if(cfg.appTitle){
+    document.querySelectorAll('.nav-logo span').forEach(el=>{
+      const b=el.querySelector('b');
+      if(b){const parts=cfg.appTitle.split(' ');el.childNodes[0].textContent=parts[0]+' ';b.textContent=parts.slice(1).join(' ');}
+    });
+  }
+  if(cfg.heroText){const el=document.querySelector('.home-hero-text h1');if(el)el.innerHTML=cfg.heroText.replace('|','<br>').replace('<strong>','<span>').replace('</strong>','</span>');}
+  if(cfg.heroSub){const el=document.querySelector('.home-hero-text p');if(el)el.textContent=cfg.heroSub;}
+  if(cfg.loginTitle){const el=document.querySelector('.auth-logo h1');if(el){const sp=el.querySelector('span');el.childNodes[0].textContent=cfg.loginTitle.split(' ')[0]+' ';if(sp)sp.textContent=cfg.loginTitle.split(' ').slice(1).join(' ');}}
+  if(cfg.loginSub){const el=document.querySelector('.auth-logo p');if(el)el.textContent=cfg.loginSub;}
+}
+
+function saveDesignConfig(){
+  const cfg=DB.get('hmx_design_config')||{};
+  const fields={
+    discordUrl:'cfgDiscordUrl',colorBlue:'cfgColorBlue',colorBg:'cfgColorBg',
+    appTitle:'cfgAppTitle',heroText:'cfgHeroText',heroSub:'cfgHeroSub',
+    loginTitle:'cfgLoginTitle',loginSub:'cfgLoginSub'
+  };
+  Object.entries(fields).forEach(([key,elId])=>{
+    const val=(document.getElementById(elId)||{}).value;
+    if(val)cfg[key]=val;
+  });
+  DB.set('hmx_design_config',cfg);
+  applyDesignConfig();
+  showToast('✅ Configuración guardada y aplicada');
+}
+
+function loadDesignConfigToForm(){
+  const cfg=DB.get('hmx_design_config')||{};
+  const fields={
+    discordUrl:'cfgDiscordUrl',colorBlue:'cfgColorBlue',colorBg:'cfgColorBg',
+    appTitle:'cfgAppTitle',heroText:'cfgHeroText',heroSub:'cfgHeroSub',
+    loginTitle:'cfgLoginTitle',loginSub:'cfgLoginSub'
+  };
+  Object.entries(fields).forEach(([key,elId])=>{
+    const el=document.getElementById(elId);
+    if(el&&cfg[key])el.value=cfg[key];
+  });
+}
+
+// ═══════════════════════════════════
+// ADMIN REWARDS
+// ═══════════════════════════════════
+function toggleRewardFields(){
+  const t=document.getElementById('rewardType').value;
+  document.getElementById('rewardCoinsField').style.display=t==='coins'?'':'none';
+  document.getElementById('rewardPackField').style.display=t==='pack'?'':'none';
+  document.getElementById('rewardCardField').style.display=t==='card'?'':'none';
+}
+
+function populateRewardSelects(){
+  const users=(DB.get('hmx_users')||[]).filter(u=>!u.isAdmin);
+  const sel=document.getElementById('rewardUser');
+  if(sel)sel.innerHTML=users.map(u=>`<option value="${u.username}">${u.username}</option>`).join('');
+  const cards=DB.get('hmx_cards')||[];
+  const cardSel=document.getElementById('rewardCardSelect');
+  if(cardSel)cardSel.innerHTML=cards.map(c=>`<option value="${c.id}">${rarityData[c.rarity]?.icon||''} ${c.name} (${c.rarity})</option>`).join('');
+}
+
+function giveReward(){
+  const username=document.getElementById('rewardUser').value;
+  const type=document.getElementById('rewardType').value;
+  if(!username){showToast('⚠️ Selecciona un usuario');return;}
+  const users=DB.get('hmx_users')||[];
+  const idx=users.findIndex(u=>u.username===username);
+  if(idx<0){showToast('❌ Usuario no encontrado');return;}
+  const u=users[idx];
+  let desc='';
+  if(type==='coins'){
+    const coins=parseInt(document.getElementById('rewardCoins').value)||0;
+    if(!coins){showToast('⚠️ Escribe la cantidad');return;}
+    u.coins=(u.coins||0)+coins;
+    desc=`🪙 +${coins.toLocaleString()} monedas`;
+  } else if(type==='pack'){
+    const packType=document.getElementById('rewardPackType').value;
+    const qty=parseInt(document.getElementById('rewardPackQty').value)||1;
+    const key='bonusPacks_'+packType;
+    u[key]=(u[key]||0)+qty;
+    const pd=packDefs.find(p=>p.id===packType);
+    desc=`⬜ x${qty} sobre${qty>1?'s':''} ${pd?pd.label:packType}`;
+  } else if(type==='card'){
+    const cardId=document.getElementById('rewardCardSelect').value;
+    if(!cardId){showToast('⚠️ Selecciona una carta');return;}
+    if(!u.cards)u.cards=[];
+    if(u.cards.includes(cardId)){
+      if(!u.dupes)u.dupes=[];
+      u.dupes.push(cardId);
+      desc='🃏 Carta añadida como repetida';
+    } else {
+      u.cards.push(cardId);
+      desc='🃏 Carta añadida al álbum';
+    }
+  }
+  users[idx]=u;
+  DB.set('hmx_users',users);
+  // If giving to current user, refresh
+  if(currentUser&&currentUser.username===username){
+    currentUser=users[idx];
+    updateNavCoins();
+  }
+  showToast(`✅ ${desc} → ${username}`);
+  renderAdminUsers();
+}
+
+initDB();
+applyDesignConfig();
+const savedSession=DB.get('hmx_session');
+if(savedSession){
+  const users=DB.get('hmx_users')||[];
+  const u=users.find(x=>x.username===savedSession);
+  if(u){currentUser=u;launchApp();}
+}
+
+// Enter key support
+document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+document.getElementById('regPass2').addEventListener('keydown',e=>{if(e.key==='Enter')doRegister();});
+</script>
+</body>
+</html>
